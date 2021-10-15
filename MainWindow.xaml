@@ -1,0 +1,174 @@
+﻿<Window x:Class="CuraduriaFacturas.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CuraduriaFacturas"
+        xmlns:SiaSf="http://schemas.syncfusion.com/wpf"
+        Title="MainWindow" Height="550" Width="1000" WindowState="Maximized">
+
+    <Window.Resources>
+        <SolidColorBrush Color="#FF2196F3" x:Key="ColorMain"/>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Border" x:Key="card">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Direction="0" ShadowDepth="0.5" BlurRadius="5" Color="Black"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="BtnStyle">
+            <Setter Property="Background" Value="{StaticResource ColorMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ColorMain}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="SiaSf:GridHeaderCellControl" x:Key="headerStyle">
+            <Setter Property="Background" Value="{StaticResource ColorMain}"/>
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style TargetType="SiaSf:SfBusyIndicator" x:Key="BusyStyle">
+            <Setter Property="Foreground" Value="{StaticResource ColorMain}"/>
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="FontFamily" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="AnimationSpeed" Value="100"/>
+            <Setter Property="AnimationType" Value="Liquid"/>
+            <Setter Property="Header" Value="Cargando Datos..."/>
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="ViewboxHeight" Value="40"/>
+            <Setter Property="ViewboxWidth" Value="40"/>
+            <Setter Property="IsBusy" Value="False"/>
+        </Style>
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+
+        <Border Grid.Row="0" Style="{StaticResource card}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Fecha Consulta :" VerticalAlignment="Center" HorizontalAlignment="Right" FontWeight="Bold"/>
+                <DatePicker Name="TxDate" Grid.Column="1" VerticalAlignment="Center" Margin="5"/>
+                <Button Name="BtnConsultarFE" Grid.Column="2" Content="CONSULTAR FACTURAS" Style="{StaticResource BtnStyle}" Click="BtnConsultarFE_Click"/>
+                <Button Name="BtnConsultarNC" Grid.Column="3" Content="CONSULTAR NOTAS" Style="{StaticResource BtnStyle}" Click="BtnConsultarNC_Click"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource card}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <SiaSf:SfDataGrid  x:Name="dataGridAllFact"  AutoGenerateColumns="False" ShowGroupDropArea="True" FontSize="10" AllowFiltering="True" HeaderStyle="{StaticResource headerStyle}">
+                    <SiaSf:SfDataGrid.Columns>
+                        <SiaSf:GridTextColumn HeaderText="ID" MappingName="id" Width="100"/>
+                        <SiaSf:GridTextColumn x:Name="ColumnFENC" HeaderText="Factura" MappingName="numFactura" ColumnSizer="AutoWithLastColumnFill"/>
+                        <SiaSf:GridTemplateColumn MappingName="Obtner FA" Width="60"  AllowFiltering="False" >
+                            <SiaSf:GridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="BtnGetFact" Content="...." Click="BtnGetFact_Click" Background="{StaticResource ColorMain}" BorderBrush="{StaticResource ColorMain}" Foreground="Black" Cursor="Hand" />
+                                </DataTemplate>
+                            </SiaSf:GridTemplateColumn.CellTemplate>
+                        </SiaSf:GridTemplateColumn>
+                        <SiaSf:GridTemplateColumn MappingName="Contabilizar" Width="70" AllowFiltering="False" >
+                            <SiaSf:GridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="BtnInsContab" Content="...." Click="BtnInsContab_Click" Background="{StaticResource ColorMain}" BorderBrush="{StaticResource ColorMain}" Foreground="Black" Cursor="Hand" />
+                                </DataTemplate>
+                            </SiaSf:GridTemplateColumn.CellTemplate>
+                        </SiaSf:GridTemplateColumn>
+                    </SiaSf:SfDataGrid.Columns>
+                </SiaSf:SfDataGrid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+
+                    <TextBox Name="TxDetalle" Grid.Row="0" BorderBrush="{StaticResource ColorMain}" BorderThickness="1" Margin="5"/>
+
+                    <Grid Grid.Row="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Email : " VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold"/>
+                            <TextBox Name="TxEmail" Width="200" VerticalAlignment="Center" Height="30"/>
+                            <Button Name="BtnEstado" Content="ESTADO" Style="{StaticResource BtnStyle}" Width="80" Click="BtnEstado_Click"/>
+                            <Button Name="BtnReenvio" Content="REENVIAR" Style="{StaticResource BtnStyle}" Width="80" Click="BtnReenvio_Click"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <StackPanel x:Name="GridMain" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Button Name="BtnEnviar" Content="Enviar" Style="{StaticResource BtnStyle}" Width="100" Click="BtnEnviar_Click"/>
+                            <Button Content="Consultar" Style="{StaticResource BtnStyle}" Width="100"/>
+                            <Button Content="Descargar" Style="{StaticResource BtnStyle}" Width="100"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <SiaSf:SfBusyIndicator Name="sfBusyIndicator" Style="{StaticResource BusyStyle}" Grid.ColumnSpan="2"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource card}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170*"/>
+                    <ColumnDefinition Width="321*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Content="LOG ENVIO ELECTRONICO" Background="{StaticResource ColorMain}" Foreground="White" FontSize="10" Grid.ColumnSpan="2"/>
+
+                <TextBox Name="TxLogFE" Grid.Row="1" FontSize="10" Grid.ColumnSpan="2"/>
+            </Grid>
+        </Border>
+
+
+        <Border Grid.Row="3" Style="{StaticResource card}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="TOTAL FACTURAS :" VerticalAlignment="Center" Margin="5,0,0,0" FontWeight="Bold"/>
+                <TextBlock Name="TxTotFacturas" Grid.Column="1" Text="...." VerticalAlignment="Center" Margin="5,0,0,0" />
+
+                <TextBlock Text="TOTAL ITEMS :"  Grid.Column="2" VerticalAlignment="Center" Margin="5,0,0,0" FontWeight="Bold"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>
