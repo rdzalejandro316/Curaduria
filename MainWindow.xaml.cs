@@ -26,6 +26,7 @@ using System.Xml.Serialization;
 using System.Data.OleDb;
 using System.Configuration;
 using CuraduriaFacturas.NotasCredito;
+using Microsoft.Win32;
 
 namespace CuraduriaFacturas
 {
@@ -34,27 +35,27 @@ namespace CuraduriaFacturas
     {
 
         public enum IsTypeFEorNC { FE, NC };
-        string Api = @"http://192.168.102.1:8080/";
-        string URLGETFE = @"pruebas/index.php/cu3facturaelectronica/getFacturas";
-        string URLGETNC = @"pruebas/index.php/cu3facturaelectronica/getNotasCredito";
+        string Api = ConfigurationManager.AppSettings["Api"].ToString();
+        string URLGETFE = ConfigurationManager.AppSettings["URLGETFE"].ToString();
+        string URLGETNC = ConfigurationManager.AppSettings["URLGETNC"].ToString();
+        string URLFC = ConfigurationManager.AppSettings["URLFC"].ToString();
+        string URLNC = ConfigurationManager.AppSettings["URLNC"].ToString();
+
         IsTypeFEorNC IsFEorNC;
-        string URLFC = @"pruebas/index.php/cu3facturaelectronica/getFactura/nf/";
-        string URLNC = @"pruebas/index.php/cu3facturaelectronica/getNotaCredito/nc/";
 
         string fileNameFE = "factura.xml";
         string fileNameNC = "nota.xml";
         string ArchivoRequest = "";
-        string tokenEmpresa = "5288b0621f424a49b6c4f9750a3fd1e5b4884da9";
-        string tokenAuthorizacion = "de0e20662a20462ba64bcbdf6405e6e9ac842849";
+        string tokenEmpresa = ConfigurationManager.AppSettings["tokenEmpresa"].ToString();
+        string tokenAuthorizacion = ConfigurationManager.AppSettings["tokenAuthorizacion"].ToString();
 
         SrvEnvio.ServiceClient serviceClienteEnvio = new SrvEnvio.ServiceClient();
-        //SrvAjunto.ServiceClient serviceClientAdjunto = new SrvAjunto.ServiceClient();
-
-
         List<ValueDefault> cabeza_default = new List<ValueDefault>();
         List<ValueDefault> cuerpo_default = new List<ValueDefault>();
 
         string ConnectionFox = ConfigurationManager.AppSettings["ConnectionFox"].ToString();
+
+        #region inicio
 
         public MainWindow()
         {
@@ -63,7 +64,6 @@ namespace CuraduriaFacturas
             ArchivoRequest = $"{AppDomain.CurrentDomain.BaseDirectory}";
             loadFields();
         }
-
         public void loadFields()
         {
             try
@@ -129,6 +129,8 @@ namespace CuraduriaFacturas
                 MessageBox.Show("error al llenar campos:" + w);
             }
         }
+
+        #endregion
 
         #region consulta
 
@@ -245,8 +247,6 @@ namespace CuraduriaFacturas
                 return null;
             }
         }
-
-
 
         #endregion
 
@@ -447,11 +447,6 @@ namespace CuraduriaFacturas
             }
         }
 
-        #endregion
-
-
-        #region facturacion electronica
-
         private async void BtnEnviar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -484,7 +479,6 @@ namespace CuraduriaFacturas
                         Enviando(datos, IsFEorNC);
                     }
 
-                    sfBusyIndicator.IsBusy = false;
                 }
                 else
                 {
@@ -883,7 +877,7 @@ namespace CuraduriaFacturas
 
 
                     sfBusyIndicator.IsBusy = true;
-                    GridMain.IsEnabled = false;
+                    //GridMain.IsEnabled = false;
 
 
                     docRespuesta = serviceClienteEnvio.EnviarAsync(tokenEmpresa, tokenAuthorizacion, factura, adjuntos);
@@ -891,10 +885,7 @@ namespace CuraduriaFacturas
 
                     if (docRespuesta.IsCompleted)
                     {
-
                         sfBusyIndicator.IsBusy = false;
-                        GridMain.IsEnabled = true;
-                        GridMain.Opacity = 1;
 
                         StringBuilder msgError = new StringBuilder();
 
@@ -961,7 +952,16 @@ namespace CuraduriaFacturas
                         }
                     }
 
+                    sfBusyIndicator.IsBusy = false;
+                    //GridMain.IsEnabled = true;
+                    //GridMain.Opacity = 1;
+
+
                 }
+
+                sfBusyIndicator.IsBusy = false;
+                //GridMain.IsEnabled = true;
+                //GridMain.Opacity = 1;
 
             }
             catch (Exception ex)
@@ -974,54 +974,19 @@ namespace CuraduriaFacturas
         }
 
 
+        #endregion
 
-        private async void BtnEstado_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-                sfBusyIndicator.IsBusy = true;
-                GridMain.IsEnabled = false;
-                GridMain.Opacity = 0.5;
-
-                Facturas fact = (Facturas)dataGridAllFact.SelectedItems[0];
-                string factura = fact.numFactura.Trim();
-
-                DocumentStatusResponse response = await serviceClienteEnvio.EstadoDocumentoAsync(tokenEmpresa, tokenAuthorizacion, factura);
-                StringBuilder st = new StringBuilder();
-                st.Append("ACEPTACION FISICA: " + (response.aceptacionFisica ? "SI" : "NO") + Environment.NewLine);
-                st.Append("CANDENA CODIGO QR: " + response.cadenaCodigoQR.ToString().Trim() + Environment.NewLine);
-                st.Append("CANDENA CODIGO CUFE: " + response.cadenaCufe.ToString().Trim() + Environment.NewLine);
-                st.Append("CODIGO: " + response.codigo.ToString().Trim() + Environment.NewLine);
-                st.Append("CONSECUTIVO: " + response.consecutivo.ToString().Trim() + Environment.NewLine);
-                st.Append("CUFE: " + response.cufe.ToString().Trim() + Environment.NewLine);
-                st.Append("ESTADO DOC: " + response.descripcionEstatusDocumento.ToString().Trim() + Environment.NewLine);
-                st.Append("VALIDACION DIAN: " + (response.esValidoDIAN ? "ACEPTADA" : "EN ESPERA") + Environment.NewLine);
-                st.Append("FECHA DOC: " + response.fechaDocumento.ToString().Trim() + Environment.NewLine);
-                st.Append("MENSAJE: " + response.mensaje.ToString().Trim() + Environment.NewLine);
-                st.Append("MENSAJE DOC: " + response.mensajeDocumento.ToString().Trim() + Environment.NewLine);
-                st.Append("POSEE ADJUNTO: " + (response.poseeAdjuntos ? "SI" : "NO") + Environment.NewLine);
-                st.Append("RESULTADO: " + response.resultado.ToString().Trim() + Environment.NewLine);
-
-                sfBusyIndicator.IsBusy = false;
-                GridMain.IsEnabled = true;
-                GridMain.Opacity = 1;
-                MessageBox.Show(st.ToString(), "Estado de Documento", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("el documento no existe", "alerta", MessageBoxButton.OK, MessageBoxImage.Warning);
-                sfBusyIndicator.IsBusy = false;
-                GridMain.IsEnabled = true;
-                GridMain.Opacity = 1;
-            }
-        }
-
+        #region opciones de facturacion electronica     
         private async void BtnReenvio_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+
+                if (string.IsNullOrEmpty(TxEmail.Text))
+                {
+                    MessageBox.Show("el campo email debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
 
                 TxLogFE.Text = "Envio de Factura:" + Environment.NewLine;
 
@@ -1064,7 +1029,97 @@ namespace CuraduriaFacturas
             }
         }
 
+        private async void BtnEstado_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(TxDoc.Text))
+                {
+                    MessageBox.Show("el campo documento debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                sfBusyIndicator.IsBusy = true;
+                GridMain.IsEnabled = false;
+                GridMain.Opacity = 0.5;
+
+                DocumentStatusResponse response = await serviceClienteEnvio.EstadoDocumentoAsync(tokenEmpresa, tokenAuthorizacion, TxDoc.Text);
+                StringBuilder st = new StringBuilder();
+                st.Append("ACEPTACION FISICA: " + (response.aceptacionFisica ? "SI" : "NO") + Environment.NewLine);
+                st.Append("CANDENA CODIGO QR: " + response.cadenaCodigoQR.ToString().Trim() + Environment.NewLine);
+                st.Append("CANDENA CODIGO CUFE: " + response.cadenaCufe.ToString().Trim() + Environment.NewLine);
+                st.Append("CODIGO: " + response.codigo.ToString().Trim() + Environment.NewLine);
+                st.Append("CONSECUTIVO: " + response.consecutivo.ToString().Trim() + Environment.NewLine);
+                st.Append("CUFE: " + response.cufe.ToString().Trim() + Environment.NewLine);
+                st.Append("ESTADO DOC: " + response.descripcionEstatusDocumento.ToString().Trim() + Environment.NewLine);
+                st.Append("VALIDACION DIAN: " + (response.esValidoDIAN ? "ACEPTADA" : "EN ESPERA") + Environment.NewLine);
+                st.Append("FECHA DOC: " + response.fechaDocumento.ToString().Trim() + Environment.NewLine);
+                st.Append("MENSAJE: " + response.mensaje.ToString().Trim() + Environment.NewLine);
+                st.Append("MENSAJE DOC: " + response.mensajeDocumento.ToString().Trim() + Environment.NewLine);
+                st.Append("POSEE ADJUNTO: " + (response.poseeAdjuntos ? "SI" : "NO") + Environment.NewLine);
+                st.Append("RESULTADO: " + response.resultado.ToString().Trim() + Environment.NewLine);
+
+                sfBusyIndicator.IsBusy = false;
+                GridMain.IsEnabled = true;
+                GridMain.Opacity = 1;
+                MessageBox.Show(st.ToString(), "Estado de Documento", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("el documento no existe", "alerta", MessageBoxButton.OK, MessageBoxImage.Warning);
+                sfBusyIndicator.IsBusy = false;
+                GridMain.IsEnabled = true;
+                GridMain.Opacity = 1;
+            }
+        }
+
+        private async void Btndescargar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(TxDoc.Text))
+                {
+                    MessageBox.Show("el campo documento debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                sfBusyIndicator.IsBusy = true;
+                GridMain.IsEnabled = false;
+                GridMain.Opacity = 0.5;
+
+                DownloadPDFResponse pdfResponse = null;
+                pdfResponse = await serviceClienteEnvio.DescargaPDFAsync(tokenEmpresa, tokenAuthorizacion, TxDoc.Text);
+
+                if (pdfResponse.codigo == 200)
+                {
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "Pdf|*.pdf";
+                    saveFileDialog.Title = "Save File";
+                    saveFileDialog.ShowDialog();
+
+                    if (!string.IsNullOrEmpty(saveFileDialog.FileName))
+                    {
+                        string path = saveFileDialog.FileName;
+                        File.WriteAllBytes(path, Convert.FromBase64String(pdfResponse.documento));
+                        MessageBox.Show("se guardo el archivo exitosamente", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+
+                sfBusyIndicator.IsBusy = false;
+                GridMain.IsEnabled = true;
+                GridMain.Opacity = 1;
+
+
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error al descargar formato de documento:" + w);
+            }
+        }
         #endregion
+
 
     }
 }
