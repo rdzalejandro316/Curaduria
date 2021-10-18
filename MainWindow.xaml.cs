@@ -100,7 +100,7 @@ namespace CuraduriaFacturas
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_SUC", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "NUM_CHQ", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "DOC_MOV", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FIN", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "FIN", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "SALDO", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "DOC_CRUC", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "DOC_REF", valdefault = "''" });
@@ -114,10 +114,10 @@ namespace CuraduriaFacturas
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_BANC", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "FEC_CON", valdefault = "date()" });
                 cuerpo_default.Add(new ValueDefault() { campo = "ORD_PAG", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FEC_SUSC", valdefault = "date()" });
+                cuerpo_default.Add(new ValueDefault() { campo = "FEC_SUSC", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "TIP_CLAS", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FEC_ING", valdefault = "date()" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FEC_SALI", valdefault = "date()" });
+                cuerpo_default.Add(new ValueDefault() { campo = "FEC_ING", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "FEC_SALI", valdefault = "''" });
 
 
                 #endregion
@@ -361,6 +361,8 @@ namespace CuraduriaFacturas
 
                     if (datos != null)
                     {
+                        List<string> query = new List<string>();
+
                         DateTime date = Convert.ToDateTime(datos.fechaEmision);
                         string año = date.Year.ToString();
                         string mes = date.ToString("MM");
@@ -374,7 +376,7 @@ namespace CuraduriaFacturas
 
                         string cabeza = $"INSERT INTO CAB_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,FEC_DOC,DETALLE,{colm_parm_cab}) VALUES ";
                         cabeza += $"('{año}','{mes}','{cod_trn}','{num_trn}',date(),'WEB API',{val_parm_cab});";
-
+                        query.Add(cabeza);
 
                         string colm_parm_cue = String.Join(",", cuerpo_default.Select(s => s.campo).ToArray());
                         string val_parm_cue = String.Join(",", cuerpo_default.Select(s => s.valdefault).ToArray());
@@ -383,20 +385,20 @@ namespace CuraduriaFacturas
                         decimal iva = datos.gruposImpuestos.listaImpuestos.valor;
                         decimal total = datos.gruposImpuestos.total;
 
-                        string cuerpo = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
-                        cuerpo += $"('{año}','{mes}','{cod_trn}','{num_trn}','413524','{datos.facturador.identificacion}','',0,0,{datos.totalBaseImponible},{val_parm_cue});";
-
-                        cuerpo += $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
-                        cuerpo += $"('{año}','{mes}','{cod_trn}','{num_trn}','24081005','{datos.facturador.identificacion}','',0,0,{iva},{val_parm_cue});";
-
-                        cuerpo += $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
-                        cuerpo += $"('{año}','{mes}','{cod_trn}','{num_trn}','111005','{datos.facturador.identificacion}','',0,{total},{val_parm_cue});";
+                        string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
+                        cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','413524','{datos.facturador.identificacion}','',0,0,{datos.totalBaseImponible},{val_parm_cue});";
+                        query.Add(cuerpo1);
 
 
+                        string cuerpo2 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
+                        cuerpo2 += $"('{año}','{mes}','{cod_trn}','{num_trn}','24081005','{datos.facturador.identificacion}','',0,0,{iva},{val_parm_cue});";
+                        query.Add(cuerpo2);
 
-                        string query = cabeza + cuerpo;
-                        //MessageBox.Show(query);
-                        //string query = "INSERT INTO VAR_BAl (cod_var,nom_var,val_var) VALUES ('99','mierda','xd');";
+                        string cuerpo3 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
+                        cuerpo3 += $"('{año}','{mes}','{cod_trn}','{num_trn}','111005','{datos.facturador.identificacion}','',0,{total},{val_parm_cue});";
+                        query.Add(cuerpo3);
+
+
 
                         var fox = await InsertFox(query);
 
@@ -420,7 +422,7 @@ namespace CuraduriaFacturas
             }
         }
 
-        public async Task<bool> InsertFox(string query)
+        public async Task<bool> InsertFox(List<string> query)
         {
             try
             {
@@ -428,16 +430,18 @@ namespace CuraduriaFacturas
                 string strCon = @"Provider=VFPOLEDB.1;Data Source=" + ConnectionFox + ";Collating Sequence=MACHINE;Connection Timeout=20;Exclusive=NO;DELETED=True;EXACT=False";
                 using (OleDbConnection con = new OleDbConnection(strCon))
                 {
-                    OleDbCommand cmd = new OleDbCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = query;
-                    cmd.Connection = con;
-                    await con.OpenAsync();
-                    int id = cmd.ExecuteNonQuery();
-                    if (id > 0) flag = true;
-                    con.Close();
+                    foreach (var item in query)
+                    {
+                        OleDbCommand cmd = new OleDbCommand();
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = item;
+                        cmd.Connection = con;
+                        await con.OpenAsync();
+                        int id = cmd.ExecuteNonQuery();
+                        if (id > 0) flag = true;
+                        con.Close();
+                    }
                 }
-
                 return flag;
             }
             catch (Exception w)
@@ -981,18 +985,35 @@ namespace CuraduriaFacturas
         {
             try
             {
+                #region validaciones
 
+                
                 if (string.IsNullOrEmpty(TxEmail.Text))
                 {
                     MessageBox.Show("el campo email debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
+                if (dataGridAllFact.SelectedIndex < 0)
+                {
+                    MessageBox.Show("debe de seleccionar alguna factura de la grilla", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+                #endregion
 
                 TxLogFE.Text = "Envio de Factura:" + Environment.NewLine;
 
-                string ruta = AppDomain.CurrentDomain.BaseDirectory + "/Tmp";
-                Facturas fact = (Facturas)dataGridAllFact.SelectedItems[0];
-                string factura = fact.numFactura.Trim();
+                string factura = "";
+
+                if (IsFEorNC == IsTypeFEorNC.FE)
+                {
+                    Facturas fact = (Facturas)dataGridAllFact.SelectedItems[0];
+                    factura = fact.numFactura;
+                }
+                else
+                {
+                    Notas fact = (Notas)dataGridAllFact.SelectedItems[0];
+                    factura = fact.numNotaCredito;
+                }
 
                 sfBusyIndicator.IsBusy = true;
 

@@ -166,14 +166,14 @@
 
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Email : " VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold"/>
-                                <TextBox Name="TxEmail" VerticalAlignment="Center" Height="30" Width="120"/>
+                                <TextBox Name="TxEmail" VerticalAlignment="Center" Height="30" Width="120" VerticalContentAlignment="Center"/>
                             </StackPanel>
                             <Button Name="BtnReenvio" Grid.Row="1" Content="REENVIAR" Style="{StaticResource BtnStyle}" Width="80" Click="BtnReenvio_Click"/>
 
 
                             <StackPanel Grid.Row="2" Orientation="Horizontal">
                                 <TextBlock Text="Docu :" VerticalAlignment="Center" Margin="10,0,0,0" FontWeight="Bold"/>
-                                <TextBox Name="TxDoc" VerticalAlignment="Center" Height="30" Width="120"/>
+                                <TextBox Name="TxDoc" VerticalAlignment="Center" Height="30" Width="120" VerticalContentAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Button Name="BtnEstado" Content="ESTADO" Style="{StaticResource BtnStyle}" Width="80" Click="BtnEstado_Click"/>
