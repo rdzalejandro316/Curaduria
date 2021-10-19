@@ -13,7 +13,6 @@ C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.g.reso
 C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.Properties.Resources.resources
 C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.csproj.GenerateResource.cache
 C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.csproj.CoreCompileInputs.cache
-C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.csproj.CopyComplete
 C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.exe
 C:\Users\aleja\Desktop\wili\CuraduriaFacturas\obj\Debug\CuraduriaFacturas.pdb
 C:\Users\aleja\Desktop\wili\CuraduriaFacturas\bin\Debug\Syncfusion.Data.WPF.dll

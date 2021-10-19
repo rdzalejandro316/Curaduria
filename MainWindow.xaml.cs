@@ -27,6 +27,7 @@ using System.Data.OleDb;
 using System.Configuration;
 using CuraduriaFacturas.NotasCredito;
 using Microsoft.Win32;
+using System.Net.NetworkInformation;
 
 namespace CuraduriaFacturas
 {
@@ -95,9 +96,9 @@ namespace CuraduriaFacturas
 
                 #region cuerpo
 
-                cuerpo_default.Add(new ValueDefault() { campo = "COD_CCO", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_CIU", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_SUC", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "COD_CCO", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "NUM_CHQ", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "DOC_MOV", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "FIN", valdefault = "0" });
@@ -132,12 +133,80 @@ namespace CuraduriaFacturas
 
         #endregion
 
+        #region test
+
+        public bool TestConnectionInternet()
+        {
+            try
+            {
+                return new Ping().Send("www.google.com.co").Status == IPStatus.Success;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool ConecctionForticlient()
+        {
+            try
+            {
+                return new Ping().Send("192.168.102.1").Status == IPStatus.Success;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool TestConnectionFox()
+        {
+            try
+            {
+                bool flag = false;
+                string strCon = @"Provider=VFPOLEDB.1;Data Source=" + ConnectionFox + ";Collating Sequence=MACHINE;Connection Timeout=20;Exclusive=NO;DELETED=True;EXACT=False";
+                OleDbConnection con = new OleDbConnection(strCon);
+                con.Open();
+                if (con.State == ConnectionState.Open) flag = true;
+                con.Close();
+                return flag;
+            }
+            catch (OleDbException)
+            {
+                MessageBox.Show($"Invalid Path or File Name:{ConnectionFox}", "alert", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("connection test error", "alert", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        #endregion
+
         #region consulta
 
         private async void BtnConsultarFE_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
+
 
                 TxDetalle.Text = "";
                 dataGridAllFact.ItemsSource = null;
@@ -172,6 +241,22 @@ namespace CuraduriaFacturas
         {
             try
             {
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
+
                 TxDetalle.Text = "";
                 dataGridAllFact.ItemsSource = null;
                 sfBusyIndicator.IsBusy = true;
@@ -256,6 +341,22 @@ namespace CuraduriaFacturas
         {
             try
             {
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
+
                 sfBusyIndicator.IsBusy = true;
 
                 string factura = "";
@@ -346,12 +447,73 @@ namespace CuraduriaFacturas
         {
             try
             {
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!TestConnectionFox())
+                {
+                    MessageBox.Show($"la conexion {ConnectionFox} fue erronea con el sistema siasoft vpf", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+                
+                #endregion
 
                 sfBusyIndicator.IsBusy = true;
 
-                Facturas fact = (Facturas)dataGridAllFact.SelectedItems[0];
-                string factura = fact.numFactura.Trim();
-                string url = IsFEorNC == IsTypeFEorNC.FE ? URLFC : URLNC;
+                string factura = "";
+                string url = "";
+                string cod_trn = IsFEorNC == IsTypeFEorNC.FE ? "04" : "08";
+                if (IsFEorNC == IsTypeFEorNC.FE)
+                {
+                    Facturas fact = (Facturas)dataGridAllFact.SelectedItems[0];
+                    factura = fact.numFactura;
+                    url = URLFC;
+                }
+                else
+                {
+                    Notas fact = (Notas)dataGridAllFact.SelectedItems[0];
+                    factura = fact.numNotaCredito;
+                    url = URLNC;
+                }
+
+                var IsExists = await SelectFox($"select cod_trn,num_trn,fec_doc from cab_doc where cod_trn='{cod_trn}' and num_trn='{factura}' ");
+
+                if (IsExists > 0)
+                {
+                    MessageBoxResult overwrite = MessageBox.Show($"ya existe un movimiento con la contabilizacion del documento {cod_trn}-{factura} usted desea sobrescribirlo", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (overwrite == MessageBoxResult.Yes)
+                    {
+                        List<string> del_list = new List<string>();
+                        string delete_cab = $"delete from cab_doc where cod_trn='{cod_trn}' and num_trn='{factura}';";
+                        del_list.Add(delete_cab);
+                        string delete_cue = $"delete from cue_doc where cod_trn='{cod_trn}' and num_trn='{factura}'; ";
+                        del_list.Add(delete_cue);
+                        var del = await InsertFox(del_list);
+                        
+                        if (del)                        
+                            MessageBox.Show($"el documento {cod_trn}-{factura} se elimino exitosamente","alerta",MessageBoxButton.OK,MessageBoxImage.Information);                 
+                        else                        
+                            MessageBox.Show($"error en la eliminacion del documento {cod_trn}-{factura}", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);                        
+                    }
+                    else
+                    {
+                        sfBusyIndicator.IsBusy = false;
+                        return;
+                    }
+                }
+
 
                 MessageBoxResult result = MessageBox.Show($"usted desea generar el documento contable de la factura {factura}", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -366,8 +528,7 @@ namespace CuraduriaFacturas
                         DateTime date = Convert.ToDateTime(datos.fechaEmision);
                         string año = date.Year.ToString();
                         string mes = date.ToString("MM");
-                        string cod_trn = IsFEorNC == IsTypeFEorNC.FE ? "04" : "08";
-                        string num_trn = IsFEorNC == IsTypeFEorNC.FE ? "F1" : "N1";
+                        string num_trn = factura;
 
 
                         string colm_parm_cab = String.Join(",", cabeza_default.Select(s => s.campo).ToArray());
@@ -383,33 +544,29 @@ namespace CuraduriaFacturas
 
                         decimal subtotal = datos.totalBaseImponible;
                         decimal iva = datos.gruposImpuestos.listaImpuestos.valor;
-                        decimal total = datos.gruposImpuestos.total;
+                        decimal total = datos.total;
 
-                        string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
-                        cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','413524','{datos.facturador.identificacion}','',0,0,{datos.totalBaseImponible},{val_parm_cue});";
+
+                        string deb_cre1 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
+                        string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre1},{colm_parm_cue}) VALUES ";
+                        cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','413524','{datos.facturador.identificacion}','',0,0,{subtotal},{val_parm_cue});";
                         query.Add(cuerpo1);
 
-
-                        string cuerpo2 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
+                        string deb_cre2 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
+                        string cuerpo2 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre2},{colm_parm_cue}) VALUES ";
                         cuerpo2 += $"('{año}','{mes}','{cod_trn}','{num_trn}','24081005','{datos.facturador.identificacion}','',0,0,{iva},{val_parm_cue});";
                         query.Add(cuerpo2);
 
-                        string cuerpo3 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,DEB_MOV,CRE_MOV,{colm_parm_cue}) VALUES ";
-                        cuerpo3 += $"('{año}','{mes}','{cod_trn}','{num_trn}','111005','{datos.facturador.identificacion}','',0,{total},{val_parm_cue});";
+                        string deb_cre3 = IsFEorNC == IsTypeFEorNC.FE ? "CRE_MOV,DEB_MOV" : "DEB_MOV,CRE_MOV";
+                        string cuerpo3 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre3},{colm_parm_cue}) VALUES ";
+                        cuerpo3 += $"('{año}','{mes}','{cod_trn}','{num_trn}','111005','{datos.facturador.identificacion}','',0,0,{total},{val_parm_cue});";
                         query.Add(cuerpo3);
 
-
-
                         var fox = await InsertFox(query);
-
                         if (fox)
-                        {
-                            MessageBox.Show("inserto exitosamente");
-                        }
+                            MessageBox.Show("inserto exitosamente", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
                         else
-                        {
-                            MessageBox.Show("fallo");
-                        }
+                            MessageBox.Show("fallo la insercion de la contabilizacion", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
 
@@ -451,10 +608,50 @@ namespace CuraduriaFacturas
             }
         }
 
+        public async Task<int> SelectFox(string query)
+        {
+            try
+            {
+                int id = 0;
+                string strCon = @"Provider=VFPOLEDB.1;Data Source=" + ConnectionFox + ";Collating Sequence=MACHINE;Connection Timeout=20;Exclusive=NO;DELETED=True;EXACT=False";
+                using (OleDbConnection con = new OleDbConnection(strCon))
+                {
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = query;
+                    cmd.Connection = con;
+                    await con.OpenAsync();
+                    id = cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return id;
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error al insertar o actualizar en fox pro:" + w);
+                return 0;
+            }
+        }
+
         private async void BtnEnviar_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
 
                 if (dataGridAllFact.SelectedIndex >= 0)
                 {
@@ -850,7 +1047,21 @@ namespace CuraduriaFacturas
         {
             try
             {
+                #region validaciones
 
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
 
                 FacturaGeneral factura = await BuildFactura(request, tipo);
 
@@ -987,7 +1198,18 @@ namespace CuraduriaFacturas
             {
                 #region validaciones
 
-                
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
                 if (string.IsNullOrEmpty(TxEmail.Text))
                 {
                     MessageBox.Show("el campo email debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -1055,6 +1277,22 @@ namespace CuraduriaFacturas
             try
             {
 
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
+
                 if (string.IsNullOrEmpty(TxDoc.Text))
                 {
                     MessageBox.Show("el campo documento debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -1100,6 +1338,22 @@ namespace CuraduriaFacturas
         {
             try
             {
+                #region validaciones
+
+                if (!TestConnectionInternet())
+                {
+                    MessageBox.Show("conecte su equipo a internet", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (!ConecctionForticlient())
+                {
+                    MessageBox.Show("conecte su equipo a la VPN", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                #endregion
+
                 if (string.IsNullOrEmpty(TxDoc.Text))
                 {
                     MessageBox.Show("el campo documento debe de estar lleno", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
