@@ -28,6 +28,7 @@ using System.Configuration;
 using CuraduriaFacturas.NotasCredito;
 using Microsoft.Win32;
 using System.Net.NetworkInformation;
+using CuraduriaFacturas.Documento;
 
 namespace CuraduriaFacturas
 {
@@ -529,11 +530,13 @@ namespace CuraduriaFacturas
                         string año = date.Year.ToString();
                         string mes = date.ToString("MM");
                         string num_trn = factura;
+                        string nombre_ter = datos.facturador.nombreRegistrado.Trim();
 
 
                         string colm_parm_cab = String.Join(",", cabeza_default.Select(s => s.campo).ToArray());
                         string val_parm_cab = String.Join(",", cabeza_default.Select(s => s.valdefault).ToArray());
 
+                        string fec_trn = date.ToString("dd/MM/yyyy");
 
                         string cabeza = $"INSERT INTO CAB_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,FEC_DOC,DETALLE,{colm_parm_cab}) VALUES ";
                         cabeza += $"('{año}','{mes}','{cod_trn}','{num_trn}',date(),'WEB API',{val_parm_cab});";
@@ -542,25 +545,41 @@ namespace CuraduriaFacturas
                         string colm_parm_cue = String.Join(",", cuerpo_default.Select(s => s.campo).ToArray());
                         string val_parm_cue = String.Join(",", cuerpo_default.Select(s => s.valdefault).ToArray());
 
-                        decimal subtotal = datos.totalBaseImponible;
-                        decimal iva = datos.gruposImpuestos.listaImpuestos.valor;
-                        decimal total = datos.total;
+
+                        List<CuentasContable> cuentasContables = datos.cuentasContables;
 
 
-                        string deb_cre1 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
-                        string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre1},{colm_parm_cue}) VALUES ";
-                        cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','413524','{datos.facturador.identificacion}','',0,0,{subtotal},{val_parm_cue});";
-                        query.Add(cuerpo1);
+                        foreach (var cta in cuentasContables)
+                        {
 
-                        string deb_cre2 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
-                        string cuerpo2 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre2},{colm_parm_cue}) VALUES ";
-                        cuerpo2 += $"('{año}','{mes}','{cod_trn}','{num_trn}','24081005','{datos.facturador.identificacion}','',0,0,{iva},{val_parm_cue});";
-                        query.Add(cuerpo2);
+                            decimal valor = Convert.ToDecimal(cta.valor);
+                            string cuenta = cta.numerocuenta.Trim();
+                            
+                            string deb_cre = "";
+                            string des_mov = "";
+                            switch (cuenta.Substring(0,1))
+                            {
+                                case "4":
+                                    deb_cre = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
+                                    des_mov = $"INGRESO:{nombre_ter}";
+                                    break;
+                                case "2":
+                                    deb_cre = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
+                                    des_mov = $"IVA:{nombre_ter}";
+                                    break;
+                                case "1":
+                                    deb_cre = IsFEorNC == IsTypeFEorNC.FE ? "CRE_MOV,DEB_MOV" : "DEB_MOV,CRE_MOV";
+                                    des_mov = $"CAJA:{nombre_ter}";
+                                    break;
+                            }
 
-                        string deb_cre3 = IsFEorNC == IsTypeFEorNC.FE ? "CRE_MOV,DEB_MOV" : "DEB_MOV,CRE_MOV";
-                        string cuerpo3 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre3},{colm_parm_cue}) VALUES ";
-                        cuerpo3 += $"('{año}','{mes}','{cod_trn}','{num_trn}','111005','{datos.facturador.identificacion}','',0,0,{total},{val_parm_cue});";
-                        query.Add(cuerpo3);
+                            string deb_cre1 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
+                            string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre},{colm_parm_cue}) VALUES ";
+                            cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','{cuenta}','{datos.facturador.identificacion}','{des_mov}',0,0,{valor},{val_parm_cue});";                            
+                            query.Add(cuerpo1);                            
+                        }
+                        
+
 
                         var fox = await InsertFox(query);
                         if (fox)
@@ -1398,3 +1417,4 @@ namespace CuraduriaFacturas
 
     }
 }
+

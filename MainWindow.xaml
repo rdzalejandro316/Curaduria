@@ -144,7 +144,7 @@
                     </Grid.RowDefinitions>
 
                     <Label Content="LOG DETALLE DE FACTURA/NOTA CREDITO" Grid.ColumnSpan="2" Style="{StaticResource LbTitle}"/>
-                    <TextBox Name="TxDetalle" Grid.Row="1" BorderBrush="{StaticResource ColorMain}" BorderThickness="1" Margin="5"/>
+                    <TextBox Name="TxDetalle" Grid.Row="1" BorderBrush="{StaticResource ColorMain}" BorderThickness="1" Margin="5" VerticalScrollBarVisibility="Visible" />
                 </Grid>
 
                 <Grid Grid.Column="2">
@@ -179,7 +179,8 @@
                                 <Button Name="BtnEstado" Content="ESTADO" Style="{StaticResource BtnStyle}" Width="80" Click="BtnEstado_Click"/>
                                 <Button Name="Btndescargar" Content="DESCARGAR" Style="{StaticResource BtnStyle}" Width="80" Click="Btndescargar_Click"/>
                             </StackPanel>
-
+                            
+                          
                         </Grid>
                     </Border>
                 </Grid>
@@ -199,7 +200,7 @@
 
                 <Label Content="LOG ENVIO ELECTRONICO" Grid.ColumnSpan="2" Style="{StaticResource LbTitle}"/>
 
-                <TextBox Name="TxLogFE" Grid.Row="1" FontSize="10" Grid.ColumnSpan="2"/>
+                <TextBox Name="TxLogFE" Grid.Row="1" FontSize="10" Grid.ColumnSpan="2" />
             </Grid>
         </Border>
 

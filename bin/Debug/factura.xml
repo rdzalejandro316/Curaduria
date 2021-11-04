@@ -9,7 +9,7 @@
         <email>
           <string>info@curaduria3.co</string>
         </email>
-        <fechaProgramada>2021-10-06 04:29:18</fechaProgramada>
+        <fechaProgramada>2021-10-28 11:27:49</fechaProgramada>
         <nitProveedorReceptor>1</nitProveedorReceptor>
         <telefono>5190660</telefono>
       </Destinatario>
@@ -50,7 +50,7 @@
     <tipoIdentificacion>31</tipoIdentificacion>
     <tipoPersona>1</tipoPersona>
   </cliente>
-  <consecutivoDocumento>50133</consecutivoDocumento>
+  <consecutivoDocumento>50143</consecutivoDocumento>
   <detalleDeFactura>
     <FacturaDetalle>
       <cantidadPorEmpaque>1</cantidadPorEmpaque>
@@ -61,70 +61,70 @@
         <CargosDescuentos xsi:nil="true" />
       </cargosDescuentos>
       <codigoProducto>999</codigoProducto>
-      <descripcion>Expediente: 210563, Cargo variable TRAMITE: MODIFICACIÓN LICENCIA DE CONSTRUCCION (VIGENTE)</descripcion>
-      <descripcionTecnica>Expediente: 210563, Cargo variable TRAMITE: MODIFICACIÓN LICENCIA DE CONSTRUCCION (VIGENTE)</descripcionTecnica>
+      <descripcion>Expediente: 211543, Cargo fijo TRAMITE: LICENCIA DE CONSTRUCCIÓN: AMPLIACIÓN, MODIFICACIÓN, DEMOLICIÓN PARCIAL, REFORZAMIENTO DE ESTRUCTURAS</descripcion>
+      <descripcionTecnica>Expediente: 211543, Cargo fijo TRAMITE: LICENCIA DE CONSTRUCCIÓN: AMPLIACIÓN, MODIFICACIÓN, DEMOLICIÓN PARCIAL, REFORZAMIENTO DE ESTRUCTURAS</descripcionTecnica>
       <estandarCodigo>999</estandarCodigo>
       <estandarCodigoProducto>999</estandarCodigoProducto>
       <impuestosDetalles>
         <FacturaImpuestos>
-          <baseImponibleTOTALImp>150000</baseImponibleTOTALImp>
+          <baseImponibleTOTALImp>340879</baseImponibleTOTALImp>
           <codigoTOTALImp>01</codigoTOTALImp>
           <controlInterno />
           <porcentajeTOTALImp>19</porcentajeTOTALImp>
           <unidadMedida>94</unidadMedida>
           <unidadMedidaTributo />
-          <valorTOTALImp>28500</valorTOTALImp>
+          <valorTOTALImp>64767</valorTOTALImp>
           <valorTributoUnidad />
         </FacturaImpuestos>
       </impuestosDetalles>
       <impuestosTotales>
         <ImpuestosTotales>
           <codigoTOTALImp>01</codigoTOTALImp>
-          <montoTotal>28500</montoTotal>
+          <montoTotal>64767</montoTotal>
         </ImpuestosTotales>
       </impuestosTotales>
       <marca>HKA</marca>
       <muestraGratis>0</muestraGratis>
-      <precioTotal>150000</precioTotal>
-      <precioTotalSinImpuestos>150000</precioTotalSinImpuestos>
-      <precioVentaUnitario>150000</precioVentaUnitario>
+      <precioTotal>340879</precioTotal>
+      <precioTotalSinImpuestos>340879</precioTotalSinImpuestos>
+      <precioVentaUnitario>340879</precioVentaUnitario>
       <secuencia>1</secuencia>
       <unidadMedida>94</unidadMedida>
     </FacturaDetalle>
   </detalleDeFactura>
-  <fechaEmision>2021-10-06 04:29:18</fechaEmision>
-  <fechaVencimiento>2021-10-06</fechaVencimiento>
+  <fechaEmision>2021-10-28 11:27:49</fechaEmision>
+  <fechaVencimiento>2021-10-28</fechaVencimiento>
   <impuestosGenerales>
     <FacturaImpuestos>
-      <baseImponibleTOTALImp>150000</baseImponibleTOTALImp>
+      <baseImponibleTOTALImp>340879</baseImponibleTOTALImp>
       <codigoTOTALImp>01</codigoTOTALImp>
       <porcentajeTOTALImp>19</porcentajeTOTALImp>
       <unidadMedida>94</unidadMedida>
-      <valorTOTALImp>28500</valorTOTALImp>
+      <valorTOTALImp>64767</valorTOTALImp>
     </FacturaImpuestos>
   </impuestosGenerales>
   <impuestosTotales>
     <ImpuestosTotales>
       <codigoTOTALImp>01</codigoTOTALImp>
-      <montoTotal>28500</montoTotal>
+      <montoTotal>64767</montoTotal>
     </ImpuestosTotales>
   </impuestosTotales>
   <mediosDePago>
     <MediosDePago>
-      <fechaDeVencimiento>2021-10-06</fechaDeVencimiento>
+      <fechaDeVencimiento>2021-10-28</fechaDeVencimiento>
       <medioPago>49</medioPago>
       <metodoDePago>1</metodoDePago>
       <numeroDeReferencia />
     </MediosDePago>
   </mediosDePago>
   <moneda>COP</moneda>
-  <rangoNumeracion>-50000</rangoNumeracion>
+  <rangoNumeracion>-52000</rangoNumeracion>
   <redondeoAplicado>0</redondeoAplicado>
   <tipoDocumento>01</tipoDocumento>
   <tipoOperacion>10</tipoOperacion>
-  <totalBaseImponible>150000</totalBaseImponible>
-  <totalBrutoConImpuesto>178500</totalBrutoConImpuesto>
-  <totalMonto>178500</totalMonto>
+  <totalBaseImponible>340879</totalBaseImponible>
+  <totalBrutoConImpuesto>405646</totalBrutoConImpuesto>
+  <totalMonto>405646</totalMonto>
   <totalProductos>1</totalProductos>
-  <totalSinImpuestos>150000</totalSinImpuestos>
+  <totalSinImpuestos>340879</totalSinImpuestos>
 </FacturaGeneral>

@@ -36,6 +36,8 @@ namespace CuraduriaFacturas.Factura
         public int subtotalMasTributos { get; set; }
         public Facturador facturador { get; set; }
         public Adquiriente adquiriente { get; set; }
+        public List<CuentasContable> cuentasContables { get; set; }
+
     }
 
 }
