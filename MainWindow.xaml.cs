@@ -536,11 +536,13 @@ namespace CuraduriaFacturas
                         string colm_parm_cab = String.Join(",", cabeza_default.Select(s => s.campo).ToArray());
                         string val_parm_cab = String.Join(",", cabeza_default.Select(s => s.valdefault).ToArray());
 
-                        string fec_trn = date.ToString("dd/MM/yyyy");
+                        
+                        string fec_trn = date.ToString("MM/dd/yyyy");
 
                         string cabeza = $"INSERT INTO CAB_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,FEC_DOC,DETALLE,{colm_parm_cab}) VALUES ";
-                        cabeza += $"('{año}','{mes}','{cod_trn}','{num_trn}',date(),'WEB API',{val_parm_cab});";
+                        cabeza += $"('{año}','{mes}','{cod_trn}','{num_trn}',CTOD(\"{fec_trn}\"),'WEB API',{val_parm_cab});";
                         query.Add(cabeza);
+                        
 
                         string colm_parm_cue = String.Join(",", cuerpo_default.Select(s => s.campo).ToArray());
                         string val_parm_cue = String.Join(",", cuerpo_default.Select(s => s.valdefault).ToArray());
