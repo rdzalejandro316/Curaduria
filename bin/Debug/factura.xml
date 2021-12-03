@@ -118,7 +118,7 @@
     </MediosDePago>
   </mediosDePago>
   <moneda>COP</moneda>
-  <rangoNumeracion>-52000</rangoNumeracion>
+  <rangoNumeracion>-50001</rangoNumeracion>
   <redondeoAplicado>0</redondeoAplicado>
   <tipoDocumento>01</tipoDocumento>
   <tipoOperacion>10</tipoOperacion>

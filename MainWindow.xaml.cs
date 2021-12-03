@@ -29,6 +29,7 @@ using CuraduriaFacturas.NotasCredito;
 using Microsoft.Win32;
 using System.Net.NetworkInformation;
 using CuraduriaFacturas.Documento;
+using System.Windows.Controls.Primitives;
 
 namespace CuraduriaFacturas
 {
@@ -56,6 +57,7 @@ namespace CuraduriaFacturas
         List<ValueDefault> cuerpo_default = new List<ValueDefault>();
 
         string ConnectionFox = ConfigurationManager.AppSettings["ConnectionFox"].ToString();
+        string ConnectionFoxSegurity = ConfigurationManager.AppSettings["ConnectionFoxSegurity"].ToString();
 
         #region inicio
 
@@ -93,6 +95,7 @@ namespace CuraduriaFacturas
                 cabeza_default.Add(new ValueDefault() { campo = "_USU", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "CIRCULAR", valdefault = "0" });
                 cabeza_default.Add(new ValueDefault() { campo = "XXXXX", valdefault = "''" });
+                cabeza_default.Add(new ValueDefault() { campo = "CUFE", valdefault = "''" });
                 #endregion
 
                 #region cuerpo
@@ -208,7 +211,6 @@ namespace CuraduriaFacturas
 
                 #endregion
 
-
                 TxDetalle.Text = "";
                 dataGridAllFact.ItemsSource = null;
                 sfBusyIndicator.IsBusy = true;
@@ -296,9 +298,7 @@ namespace CuraduriaFacturas
                 {
 
                     client.BaseAddress = new Uri(Api);
-
                     HttpResponseMessage response = new HttpResponseMessage();
-
                     response = await client.GetAsync(URL);
 
                     if (response.IsSuccessStatusCode)
@@ -467,10 +467,17 @@ namespace CuraduriaFacturas
                     MessageBox.Show($"la conexion {ConnectionFox} fue erronea con el sistema siasoft vpf", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                
+
+
+
+
                 #endregion
 
+
+
                 sfBusyIndicator.IsBusy = true;
+                dataGridAllFact.IsEnabled = false;
+
 
                 string factura = "";
                 string url = "";
@@ -488,6 +495,8 @@ namespace CuraduriaFacturas
                     url = URLNC;
                 }
 
+
+
                 var IsExists = await SelectFox($"select cod_trn,num_trn,fec_doc from cab_doc where cod_trn='{cod_trn}' and num_trn='{factura}' ");
 
                 if (IsExists > 0)
@@ -502,11 +511,11 @@ namespace CuraduriaFacturas
                         string delete_cue = $"delete from cue_doc where cod_trn='{cod_trn}' and num_trn='{factura}'; ";
                         del_list.Add(delete_cue);
                         var del = await InsertFox(del_list);
-                        
-                        if (del)                        
-                            MessageBox.Show($"el documento {cod_trn}-{factura} se elimino exitosamente","alerta",MessageBoxButton.OK,MessageBoxImage.Information);                 
-                        else                        
-                            MessageBox.Show($"error en la eliminacion del documento {cod_trn}-{factura}", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);                        
+
+                        if (del)
+                            MessageBox.Show($"el documento {cod_trn}-{factura} se elimino exitosamente", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+                        else
+                            MessageBox.Show($"error en la eliminacion del documento {cod_trn}-{factura}", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                     else
                     {
@@ -522,8 +531,11 @@ namespace CuraduriaFacturas
                 {
                     var datos = await GetDetails(url, factura, IsFEorNC);
 
+
+
                     if (datos != null)
                     {
+
                         List<string> query = new List<string>();
 
                         DateTime date = Convert.ToDateTime(datos.fechaEmision);
@@ -532,17 +544,30 @@ namespace CuraduriaFacturas
                         string num_trn = factura;
                         string nombre_ter = datos.facturador.nombreRegistrado.Trim();
 
+                        #region validar bloqueo de periodo
+                        var per = await SelectFoxPeriods($"select ind_ing from SIA_PER where ano='{año}' and per='{mes}'");
+                        if (per == 0)
+                        {
+                            MessageBox.Show($"el año {año} y el periodo {mes} se encuentran bloqueados a nivel empresa por ende no puede realizar registros contables", "alerta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            sfBusyIndicator.IsBusy = false;
+                            dataGridAllFact.IsEnabled = true;
+                            return;
+                        }
+
+                        #endregion
+
+
 
                         string colm_parm_cab = String.Join(",", cabeza_default.Select(s => s.campo).ToArray());
                         string val_parm_cab = String.Join(",", cabeza_default.Select(s => s.valdefault).ToArray());
 
-                        
+
                         string fec_trn = date.ToString("MM/dd/yyyy");
 
                         string cabeza = $"INSERT INTO CAB_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,FEC_DOC,DETALLE,{colm_parm_cab}) VALUES ";
                         cabeza += $"('{año}','{mes}','{cod_trn}','{num_trn}',CTOD(\"{fec_trn}\"),'WEB API',{val_parm_cab});";
                         query.Add(cabeza);
-                        
+
 
                         string colm_parm_cue = String.Join(",", cuerpo_default.Select(s => s.campo).ToArray());
                         string val_parm_cue = String.Join(",", cuerpo_default.Select(s => s.valdefault).ToArray());
@@ -556,10 +581,10 @@ namespace CuraduriaFacturas
 
                             decimal valor = Convert.ToDecimal(cta.valor);
                             string cuenta = cta.numerocuenta.Trim();
-                            
+
                             string deb_cre = "";
                             string des_mov = "";
-                            switch (cuenta.Substring(0,1))
+                            switch (cuenta.Substring(0, 1))
                             {
                                 case "4":
                                     deb_cre = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
@@ -577,21 +602,35 @@ namespace CuraduriaFacturas
 
                             string deb_cre1 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
                             string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre},{colm_parm_cue}) VALUES ";
-                            cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','{cuenta}','{datos.facturador.identificacion}','{des_mov}',0,0,{valor},{val_parm_cue});";                            
-                            query.Add(cuerpo1);                            
+                            cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','{cuenta}','{datos.facturador.identificacion}','{des_mov}',0,0,{valor},{val_parm_cue});";
+                            query.Add(cuerpo1);
                         }
-                        
+
 
 
                         var fox = await InsertFox(query);
                         if (fox)
+                        {
                             MessageBox.Show("inserto exitosamente", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            MessageBoxResult result_fe = MessageBox.Show($"usted desea enviar la factura {factura} electronicamente?", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                            if (result_fe == MessageBoxResult.Yes)
+                                await EnviarElectronicamente();
+                        }
                         else
                             MessageBox.Show("fallo la insercion de la contabilizacion", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+
+
+
                     }
                 }
 
+
                 sfBusyIndicator.IsBusy = false;
+                dataGridAllFact.IsEnabled = true;
+
+
 
             }
             catch (Exception w)
@@ -654,7 +693,75 @@ namespace CuraduriaFacturas
             }
         }
 
+
+        public async Task<int> ValidPeriods()
+        {
+            try
+            {
+
+                var per = await SelectFoxPeriods("select ind_ing from SIA_PER where ano='2021' and per='10'");
+                return per;
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("erro al validar periodo:" + w);
+                return 0;
+            }
+        }
+
+        public async Task<int> SelectFoxPeriods(string query)
+        {
+            try
+            {
+                int ind_ing = 0;
+                DataTable dt = new DataTable();
+                OleDbDataAdapter sda;
+
+                string strCon = @"Provider=VFPOLEDB.1;Data Source=" + ConnectionFoxSegurity + ";Collating Sequence=MACHINE;Connection Timeout=20;Exclusive=NO;DELETED=True;EXACT=False";
+                using (OleDbConnection con = new OleDbConnection(strCon))
+                {
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = query;
+                    cmd.Connection = con;
+                    await con.OpenAsync();
+                    sda = new OleDbDataAdapter(cmd);
+                    sda.Fill(dt);
+                    con.Close();
+                }
+
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    ind_ing = Convert.ToInt32(item["ind_ing"]);
+                }
+
+
+                return ind_ing;
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error al insertar o actualizar en fox pro:" + w);
+                return 0;
+            }
+        }
+
+
         private async void BtnEnviar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dataGridAllFact.IsEnabled = false;
+                await EnviarElectronicamente();
+                dataGridAllFact.IsEnabled = true;
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error en el envio:" + w);
+            }
+        }
+
+        public async Task EnviarElectronicamente()
         {
             try
             {
@@ -1019,8 +1126,9 @@ namespace CuraduriaFacturas
 
                 string rangoNumeracion = "";
                 if (tipo == IsTypeFEorNC.FE)
-                    rangoNumeracion = "-" + root.resolucion.numeracion.hasta;
-                else rangoNumeracion = "XX-700";
+                    rangoNumeracion = root.resolucion.numeracion.prefijo.Trim() + "-" + root.resolucion.numeracion.desde;
+                else
+                    rangoNumeracion = root.resolucion.numeracion.prefijo.Trim() + "-" + root.resolucion.numeracion.desde;
 
                 facturaDemo.rangoNumeracion = rangoNumeracion;
 
@@ -1105,6 +1213,7 @@ namespace CuraduriaFacturas
                 TxLogFE.Clear();
                 TxLogFE.Text = "Envio de Factura:" + Environment.NewLine;
 
+                string cod_trn = IsFEorNC == IsTypeFEorNC.FE ? "04" : "08";
 
 
                 if (MessageBox.Show("Confirmar envio ?", "Enviando documento", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -1113,7 +1222,7 @@ namespace CuraduriaFacturas
 
 
                     sfBusyIndicator.IsBusy = true;
-                    //GridMain.IsEnabled = false;
+                    dataGridAllFact.IsEnabled = false;
 
 
                     docRespuesta = serviceClienteEnvio.EnviarAsync(tokenEmpresa, tokenAuthorizacion, factura, adjuntos);
@@ -1124,7 +1233,6 @@ namespace CuraduriaFacturas
                         sfBusyIndicator.IsBusy = false;
 
                         StringBuilder msgError = new StringBuilder();
-
 
                         if (docRespuesta.Result.mensajesValidacion != null)
                         {
@@ -1140,12 +1248,27 @@ namespace CuraduriaFacturas
                             if (resp.codigo == 200)
                             {
 
+
                                 TxLogFE.Text += "ReEnvio de Factura emitido previa mente:" + docRespuesta.Result.codigo + Environment.NewLine;
                                 TxLogFE.Text += "Codigo: " + resp.codigo.ToString() + Environment.NewLine;
                                 TxLogFE.Text += "Consecutivo Documento: " + resp.consecutivo + Environment.NewLine;
                                 TxLogFE.Text += "Cufe: " + resp.cufe + Environment.NewLine;
                                 TxLogFE.Text += "Mensaje: " + resp.mensaje + Environment.NewLine;
                                 TxLogFE.Text += "Resultado: " + resp.resultado + Environment.NewLine;
+
+                                string fa = factura.consecutivoDocumento.ToString().Trim();
+                                var IsExists = await SelectFox($"select cod_trn,num_trn,fec_doc from cab_doc where cod_trn='{cod_trn}' and num_trn='{fa}' ");
+                                if (IsExists > 0)
+                                {
+                                    MessageBoxResult message = MessageBox.Show($"se detecto que la contabilizacion de la factura {fa} ya existe usted desea insertar el cufe en la cabeza del documento contable", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                                    if (message == MessageBoxResult.Yes)
+                                    {
+                                        var up = await UpdateContabilidad(cod_trn, factura.consecutivoDocumento.ToString(), resp.cufe);
+                                        if (up) MessageBox.Show("se actualizo el cufe exitosamente en el documento contable", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+                                    }
+                                }
+
                                 return;
                             }
                         }
@@ -1154,15 +1277,27 @@ namespace CuraduriaFacturas
                         if (docRespuesta.Result.codigo == 200 || docRespuesta.Result.codigo == 201)
                         {
 
-                            StringBuilder response = new StringBuilder();
 
+                            StringBuilder response = new StringBuilder();
                             response.Append("Codigo: " + docRespuesta.Result.codigo.ToString() + Environment.NewLine);
                             response.Append("Consecutivo Documento: " + docRespuesta.Result.consecutivoDocumento + Environment.NewLine);
                             response.Append("Cufe: " + docRespuesta.Result.cufe + Environment.NewLine);
                             response.Append("Mensaje: " + docRespuesta.Result.mensaje + Environment.NewLine);
                             response.Append("Resultado: " + docRespuesta.Result.resultado + Environment.NewLine);
-
                             TxLogFE.Text += response.ToString();
+
+                            string fa = factura.consecutivoDocumento.ToString().Trim();
+                            var IsExists = await SelectFox($"select cod_trn,num_trn,fec_doc from cab_doc where cod_trn='{cod_trn}' and num_trn='{fa}' ");
+                            if (IsExists > 0)
+                            {
+                                MessageBoxResult message = MessageBox.Show($"se detecto que la contabilizacion de la factura {fa} ya existe usted desea insertar el cufe en la cabeza del documento contable", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                                if (message == MessageBoxResult.Yes)
+                                {
+                                    var up = await UpdateContabilidad(cod_trn, fa, docRespuesta.Result.cufe);
+                                    if (up) MessageBox.Show("se actualizo el cufe exitosamente en el documento contable", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                            }
 
                         }
                         else
@@ -1186,18 +1321,22 @@ namespace CuraduriaFacturas
 
                             TxLogFE.Text += response.ToString();
                         }
+
+
+
                     }
 
+
+
+
                     sfBusyIndicator.IsBusy = false;
-                    //GridMain.IsEnabled = true;
-                    //GridMain.Opacity = 1;
+                    dataGridAllFact.IsEnabled = true;
 
 
                 }
 
                 sfBusyIndicator.IsBusy = false;
-                //GridMain.IsEnabled = true;
-                //GridMain.Opacity = 1;
+                dataGridAllFact.IsEnabled = true;
 
             }
             catch (Exception ex)
@@ -1209,6 +1348,24 @@ namespace CuraduriaFacturas
             }
         }
 
+
+
+        public async Task<bool> UpdateContabilidad(string cod_trn, string num_trn, string cufe)
+        {
+            try
+            {
+                string query = $"update cab_doc set cufe='{cufe}' where cod_trn='{cod_trn}' and num_trn='{num_trn}';";
+                List<string> Lq = new List<string>();
+                Lq.Add(query);
+                var fox = await InsertFox(Lq);
+                return fox;
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error al actualizar la contabilidad:" + w);
+                return false;
+            }
+        }
 
         #endregion
 
@@ -1414,6 +1571,7 @@ namespace CuraduriaFacturas
                 MessageBox.Show("error al descargar formato de documento:" + w);
             }
         }
+
         #endregion
 
 

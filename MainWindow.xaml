@@ -81,6 +81,7 @@
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Fecha Consulta :" VerticalAlignment="Center" HorizontalAlignment="Right" FontWeight="Bold"/>
@@ -143,7 +144,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <Label Content="LOG DETALLE DE FACTURA/NOTA CREDITO" Grid.ColumnSpan="2" Style="{StaticResource LbTitle}"/>
+                    <Label Content="LOG DETALLE DE FACTURA/NOTA CREDITO" Grid.ColumnSpan="2" Style="{StaticResource LbTitle}" HorizontalAlignment="Stretch"/>
                     <TextBox Name="TxDetalle" Grid.Row="1" BorderBrush="{StaticResource ColorMain}" BorderThickness="1" Margin="5" VerticalScrollBarVisibility="Visible" />
                 </Grid>
 
