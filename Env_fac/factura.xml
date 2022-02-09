@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FacturaGeneral xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <cantidadDecimales>2</cantidadDecimales>
+  <cliente>
+    <actividadEconomicaCIIU>0010</actividadEconomicaCIIU>
+    <destinatario>
+      <Destinatario>
+        <canalDeEntrega>0</canalDeEntrega>
+        <email>
+          <string>info@curaduria3.co</string>
+        </email>
+        <fechaProgramada>2021-10-28 11:27:49</fechaProgramada>
+        <nitProveedorReceptor>1</nitProveedorReceptor>
+        <telefono>5190660</telefono>
+      </Destinatario>
+    </destinatario>
+    <detallesTributarios>
+      <Tributos>
+        <codigoImpuesto>01</codigoImpuesto>
+      </Tributos>
+    </detallesTributarios>
+    <direccionFiscal>
+      <ciudad>BOGOTA</ciudad>
+      <codigoDepartamento>11</codigoDepartamento>
+      <departamento>CUNDINAMARCA</departamento>
+      <direccion>AK 45  95 45</direccion>
+      <lenguaje>es</lenguaje>
+      <municipio>11001</municipio>
+      <pais>CO</pais>
+      <zonaPostal />
+    </direccionFiscal>
+    <email>info@curaduria3.co</email>
+    <informacionLegalCliente>
+      <codigoEstablecimiento>00001</codigoEstablecimiento>
+      <nombreRegistroRUT>ANA MARIA CADENA TOBON</nombreRegistroRUT>
+      <numeroIdentificacion>51657102</numeroIdentificacion>
+      <numeroIdentificacionDV>9</numeroIdentificacionDV>
+      <tipoIdentificacion>31</tipoIdentificacion>
+    </informacionLegalCliente>
+    <nombreRazonSocial>ANA MARIA CADENA TOBON</nombreRazonSocial>
+    <notificar>SI</notificar>
+    <numeroDocumento>51657102</numeroDocumento>
+    <numeroIdentificacionDV>9</numeroIdentificacionDV>
+    <responsabilidadesRut>
+      <Obligaciones>
+        <obligaciones>O-23</obligaciones>
+        <regimen>04</regimen>
+      </Obligaciones>
+    </responsabilidadesRut>
+    <tipoIdentificacion>31</tipoIdentificacion>
+    <tipoPersona>1</tipoPersona>
+  </cliente>
+  <consecutivoDocumento>50143</consecutivoDocumento>
+  <detalleDeFactura>
+    <FacturaDetalle>
+      <cantidadPorEmpaque>1</cantidadPorEmpaque>
+      <cantidadReal>1</cantidadReal>
+      <cantidadRealUnidadMedida>94</cantidadRealUnidadMedida>
+      <cantidadUnidades>1</cantidadUnidades>
+      <cargosDescuentos>
+        <CargosDescuentos xsi:nil="true" />
+      </cargosDescuentos>
+      <codigoProducto>999</codigoProducto>
+      <descripcion>Expediente: 211543, Cargo fijo TRAMITE: LICENCIA DE CONSTRUCCIÓN: AMPLIACIÓN, MODIFICACIÓN, DEMOLICIÓN PARCIAL, REFORZAMIENTO DE ESTRUCTURAS</descripcion>
+      <descripcionTecnica>Expediente: 211543, Cargo fijo TRAMITE: LICENCIA DE CONSTRUCCIÓN: AMPLIACIÓN, MODIFICACIÓN, DEMOLICIÓN PARCIAL, REFORZAMIENTO DE ESTRUCTURAS</descripcionTecnica>
+      <estandarCodigo>999</estandarCodigo>
+      <estandarCodigoProducto>999</estandarCodigoProducto>
+      <impuestosDetalles>
+        <FacturaImpuestos>
+          <baseImponibleTOTALImp>340879</baseImponibleTOTALImp>
+          <codigoTOTALImp>01</codigoTOTALImp>
+          <controlInterno />
+          <porcentajeTOTALImp>19</porcentajeTOTALImp>
+          <unidadMedida>94</unidadMedida>
+          <unidadMedidaTributo />
+          <valorTOTALImp>64767</valorTOTALImp>
+          <valorTributoUnidad />
+        </FacturaImpuestos>
+      </impuestosDetalles>
+      <impuestosTotales>
+        <ImpuestosTotales>
+          <codigoTOTALImp>01</codigoTOTALImp>
+          <montoTotal>64767</montoTotal>
+        </ImpuestosTotales>
+      </impuestosTotales>
+      <marca>HKA</marca>
+      <muestraGratis>0</muestraGratis>
+      <precioTotal>340879</precioTotal>
+      <precioTotalSinImpuestos>340879</precioTotalSinImpuestos>
+      <precioVentaUnitario>340879</precioVentaUnitario>
+      <secuencia>1</secuencia>
+      <unidadMedida>94</unidadMedida>
+    </FacturaDetalle>
+  </detalleDeFactura>
+  <fechaEmision>2021-10-28 11:27:49</fechaEmision>
+  <fechaVencimiento>2021-10-28</fechaVencimiento>
+  <impuestosGenerales>
+    <FacturaImpuestos>
+      <baseImponibleTOTALImp>340879</baseImponibleTOTALImp>
+      <codigoTOTALImp>01</codigoTOTALImp>
+      <porcentajeTOTALImp>19</porcentajeTOTALImp>
+      <unidadMedida>94</unidadMedida>
+      <valorTOTALImp>64767</valorTOTALImp>
+    </FacturaImpuestos>
+  </impuestosGenerales>
+  <impuestosTotales>
+    <ImpuestosTotales>
+      <codigoTOTALImp>01</codigoTOTALImp>
+      <montoTotal>64767</montoTotal>
+    </ImpuestosTotales>
+  </impuestosTotales>
+  <mediosDePago>
+    <MediosDePago>
+      <fechaDeVencimiento>2021-10-28</fechaDeVencimiento>
+      <medioPago>49</medioPago>
+      <metodoDePago>1</metodoDePago>
+      <numeroDeReferencia />
+    </MediosDePago>
+  </mediosDePago>
+  <moneda>COP</moneda>
+  <rangoNumeracion>-50001</rangoNumeracion>
+  <redondeoAplicado>0</redondeoAplicado>
+  <tipoDocumento>01</tipoDocumento>
+  <tipoOperacion>10</tipoOperacion>
+  <totalBaseImponible>340879</totalBaseImponible>
+  <totalBrutoConImpuesto>405646</totalBrutoConImpuesto>
+  <totalMonto>405646</totalMonto>
+  <totalProductos>1</totalProductos>
+  <totalSinImpuestos>340879</totalSinImpuestos>
+</FacturaGeneral>

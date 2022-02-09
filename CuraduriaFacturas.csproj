@@ -97,6 +97,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Datos\Notas.cs" />
+    <Compile Include="Datos\SetLog.cs" />
     <Compile Include="Datos\ValueDefault.cs" />
     <Compile Include="Documento\CuentasContable.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -43,6 +43,7 @@ namespace CuraduriaFacturas
         string URLGETNC = ConfigurationManager.AppSettings["URLGETNC"].ToString();
         string URLFC = ConfigurationManager.AppSettings["URLFC"].ToString();
         string URLNC = ConfigurationManager.AppSettings["URLNC"].ToString();
+        string URLPOST = ConfigurationManager.AppSettings["URLPOST"].ToString();
 
         IsTypeFEorNC IsFEorNC;
 
@@ -73,38 +74,55 @@ namespace CuraduriaFacturas
             try
             {
                 #region cabeza
-
-                cabeza_default.Add(new ValueDefault() { campo = "OTRO_TER", valdefault = "''" });
-                cabeza_default.Add(new ValueDefault() { campo = "FACTURA", valdefault = "''" });
+                //ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,FEC_DOC,DETALLE
+                //cabeza_default.Add(new ValueDefault() { campo = "ANO_DOC", valdefault = "''" });
+                //cabeza_default.Add(new ValueDefault() { campo = "PER_DOC", valdefault = "''" });
+                //cabeza_default.Add(new ValueDefault() { campo = "COD_TRN", valdefault = "''" });
+                //cabeza_default.Add(new ValueDefault() { campo = "NUM_TRN", valdefault = "date()" });
+                //cabeza_default.Add(new ValueDefault() { campo = "FEC_DOC", valdefault = "date()" });
+                cabeza_default.Add(new ValueDefault() { campo = "FEC_CRE", valdefault = "date()" });
                 cabeza_default.Add(new ValueDefault() { campo = "DIA_PLAZ", valdefault = "0" });
-                cabeza_default.Add(new ValueDefault() { campo = "FEC_POSF", valdefault = "date()" });
                 cabeza_default.Add(new ValueDefault() { campo = "FEC_VEN", valdefault = "date()" });
+                //cabeza_default.Add(new ValueDefault() { campo = "DETALLE", valdefault = "''" });
+                cabeza_default.Add(new ValueDefault() { campo = "FACTURA", valdefault = "''" });
+                cabeza_default.Add(new ValueDefault() { campo = "OTRO_TER", valdefault = "''" });
+                cabeza_default.Add(new ValueDefault() { campo = "FEC_POSF", valdefault = "date()" });
                 cabeza_default.Add(new ValueDefault() { campo = "COD_VEN", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "COD_BAN", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "FIN", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "NUM_IMP", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "TRM", valdefault = "0" });
+                cabeza_default.Add(new ValueDefault() { campo = "RCPRV", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "RC_PROV", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "FEC_CONT", valdefault = "date()" });
                 cabeza_default.Add(new ValueDefault() { campo = "SUC_CLI", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "IND_COM", valdefault = "0" });
                 cabeza_default.Add(new ValueDefault() { campo = "VEN_COM", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "N_AR", valdefault = "''" });
-                cabeza_default.Add(new ValueDefault() { campo = "RESOLU", valdefault = "''" });
-                cabeza_default.Add(new ValueDefault() { campo = "ID_OPG", valdefault = "''" });
-                cabeza_default.Add(new ValueDefault() { campo = "_USU", valdefault = "''" });
-                cabeza_default.Add(new ValueDefault() { campo = "CIRCULAR", valdefault = "0" });
-                cabeza_default.Add(new ValueDefault() { campo = "XXXXX", valdefault = "''" });
+                cabeza_default.Add(new ValueDefault() { campo = "FOR_PAG", valdefault = "''" });
+                cabeza_default.Add(new ValueDefault() { campo = "TRANSFE", valdefault = "0" });
+                cabeza_default.Add(new ValueDefault() { campo = "REF_BAN", valdefault = "''" });
                 cabeza_default.Add(new ValueDefault() { campo = "CUFE", valdefault = "''" });
                 #endregion
 
                 #region cuerpo
-
+                //ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV
+                //cuerpo_default.Add(new ValueDefault() { campo = "ANO_DOC", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "PER_DOC", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "COD_TRN", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "NUM_TRN", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "COD_CTA", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_CIU", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_SUC", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_CCO", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "COD_TER", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "SUC_CLI", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "DES_MOV", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "NUM_CHQ", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "DOC_MOV", valdefault = "''" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "BAS_MOV", valdefault = "0" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "DEB_MOV", valdefault = "0" });
+                //cuerpo_default.Add(new ValueDefault() { campo = "CRE_MOV", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "FIN", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "SALDO", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "DOC_CRUC", valdefault = "''" });
@@ -115,14 +133,18 @@ namespace CuraduriaFacturas
                 cuerpo_default.Add(new ValueDefault() { campo = "SAL_DOC", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "INI", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "VAL_ME", valdefault = "0" });
+                cuerpo_default.Add(new ValueDefault() { campo = "DTO", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "FEC_VENC", valdefault = "date()" });
+                cuerpo_default.Add(new ValueDefault() { campo = "VR_DESC", valdefault = "0" });
                 cuerpo_default.Add(new ValueDefault() { campo = "COD_BANC", valdefault = "''" });
                 cuerpo_default.Add(new ValueDefault() { campo = "FEC_CON", valdefault = "date()" });
-                cuerpo_default.Add(new ValueDefault() { campo = "ORD_PAG", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FEC_SUSC", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "TIP_CLAS", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FEC_ING", valdefault = "''" });
-                cuerpo_default.Add(new ValueDefault() { campo = "FEC_SALI", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "CANT", valdefault = "0" });
+                cuerpo_default.Add(new ValueDefault() { campo = "VAL_UNI", valdefault = "0" });
+                cuerpo_default.Add(new ValueDefault() { campo = "POR_DES", valdefault = "0" });
+                cuerpo_default.Add(new ValueDefault() { campo = "IND_CRUC", valdefault = "0" });
+                cuerpo_default.Add(new ValueDefault() { campo = "REVELA", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "DIA_DOC", valdefault = "''" });
+                cuerpo_default.Add(new ValueDefault() { campo = "COD_CON", valdefault = "''" });
 
 
                 #endregion
@@ -167,6 +189,7 @@ namespace CuraduriaFacturas
         {
             try
             {
+                MessageBox.Show(ConnectionFox);
                 bool flag = false;
                 string strCon = @"Provider=VFPOLEDB.1;Data Source=" + ConnectionFox + ";Collating Sequence=MACHINE;Connection Timeout=20;Exclusive=NO;DELETED=True;EXACT=False";
                 OleDbConnection con = new OleDbConnection(strCon);
@@ -338,6 +361,49 @@ namespace CuraduriaFacturas
 
         #region opciones de listado
 
+        public async Task SendPostsetLog(string factura, string ListaErrores, string ListaDian)
+        {
+            try
+            {
+
+                using (var client = new HttpClient())
+                {
+
+                    client.BaseAddress = new Uri(Api);
+                    HttpResponseMessage response = new HttpResponseMessage();
+
+                    string tipoSetLog = IsFEorNC == IsTypeFEorNC.FE ? "FE" : "NC";
+
+                    SetLog setLog = new SetLog()
+                    {
+                        nrodoc = factura,
+                        tipo = tipoSetLog,
+                        estado = "VO",
+                        listaerrorres = ListaErrores,
+                        listadian = ListaDian
+                    };
+
+                    string json = Newtonsoft.Json.JsonConvert.SerializeObject(setLog);
+                    StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
+                    response = await client.PostAsync(URLPOST, data);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("exitoso");
+                    }
+                    else
+                    {
+                        MessageBox.Show("fallo");
+                    }
+                }
+
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error ");
+            }
+        }
+
         private async void BtnGetFact_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -397,7 +463,6 @@ namespace CuraduriaFacturas
         {
             try
             {
-
 
                 using (var client = new HttpClient())
                 {
@@ -525,7 +590,7 @@ namespace CuraduriaFacturas
                 }
 
 
-                MessageBoxResult result = MessageBox.Show($"usted desea generar el documento contable de la factura {factura}", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show($"¿Desea generar el documento contable de la factura {factura}?", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -542,8 +607,9 @@ namespace CuraduriaFacturas
                         string año = date.Year.ToString();
                         string mes = date.ToString("MM");
                         string num_trn = factura;
-                        string nombre_ter = datos.facturador.nombreRegistrado.Trim();
-
+                        //string nombre_ter = datos.facturador.nombreRegistrado.Trim();
+                        string nombre_ter = datos.adquiriente.nombreRegistrado.Trim();
+                        string des_cripcion = datos.listaProductos.item.descripcion.Trim();
                         #region validar bloqueo de periodo
                         var per = await SelectFoxPeriods($"select ind_ing from SIA_PER where ano='{año}' and per='{mes}'");
                         if (per == 0)
@@ -567,7 +633,7 @@ namespace CuraduriaFacturas
                         string cabeza = $"INSERT INTO CAB_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,FEC_DOC,DETALLE,{colm_parm_cab}) VALUES ";
                         cabeza += $"('{año}','{mes}','{cod_trn}','{num_trn}',CTOD(\"{fec_trn}\"),'WEB API',{val_parm_cab});";
                         query.Add(cabeza);
-
+                        //MessageBox.Show(cabeza);
 
                         string colm_parm_cue = String.Join(",", cuerpo_default.Select(s => s.campo).ToArray());
                         string val_parm_cue = String.Join(",", cuerpo_default.Select(s => s.valdefault).ToArray());
@@ -602,24 +668,25 @@ namespace CuraduriaFacturas
 
                             string deb_cre1 = IsFEorNC == IsTypeFEorNC.FE ? "DEB_MOV,CRE_MOV" : "CRE_MOV,DEB_MOV";
                             string cuerpo1 = $"INSERT INTO CUE_DOC (ANO_DOC,PER_DOC,COD_TRN,NUM_TRN,COD_CTA,COD_TER,DES_MOV,BAS_MOV,{deb_cre},{colm_parm_cue}) VALUES ";
-                            cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','{cuenta}','{datos.facturador.identificacion}','{des_mov}',0,0,{valor},{val_parm_cue});";
+                            cuerpo1 += $"('{año}','{mes}','{cod_trn}','{num_trn}','{cuenta}','{datos.adquiriente.identificacion}','{des_cripcion}',0,0,{valor},{val_parm_cue});";
                             query.Add(cuerpo1);
+                            //MessageBox.Show(cuerpo1);
                         }
 
 
-
+                        query.ForEach(Console.WriteLine);
                         var fox = await InsertFox(query);
                         if (fox)
                         {
-                            MessageBox.Show("inserto exitosamente", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Datos insertados exitosamente", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                            MessageBoxResult result_fe = MessageBox.Show($"usted desea enviar la factura {factura} electronicamente?", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            MessageBoxResult result_fe = MessageBox.Show($"¿Desea enviar la factura {factura} electronicamente?", "alerta", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                             if (result_fe == MessageBoxResult.Yes)
                                 await EnviarElectronicamente();
                         }
                         else
-                            MessageBox.Show("fallo la insercion de la contabilizacion", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Fallo la insercion de la contabilizacion", "alerta", MessageBoxButton.OK, MessageBoxImage.Information);
 
 
 
@@ -704,7 +771,7 @@ namespace CuraduriaFacturas
             }
             catch (Exception w)
             {
-                MessageBox.Show("erro al validar periodo:" + w);
+                MessageBox.Show("Error al validar periodo:" + w);
                 return 0;
             }
         }
@@ -838,7 +905,8 @@ namespace CuraduriaFacturas
                 }
                 else
                 {
-                    facturaDemo.consecutivoDocumento = "XX" + root.numeroDocumento;
+                    //facturaDemo.consecutivoDocumento = "XX" + root.numeroDocumento;
+                    facturaDemo.consecutivoDocumento =  root.numeroDocumento;
                 }
 
 
@@ -1157,7 +1225,6 @@ namespace CuraduriaFacturas
             }
         }
 
-
         private async Task<string> GetCufeFE(string numtrn)
         {
             try
@@ -1233,6 +1300,7 @@ namespace CuraduriaFacturas
                         sfBusyIndicator.IsBusy = false;
 
                         StringBuilder msgError = new StringBuilder();
+                        StringBuilder msgDian = new StringBuilder();
 
                         if (docRespuesta.Result.mensajesValidacion != null)
                         {
@@ -1242,12 +1310,19 @@ namespace CuraduriaFacturas
                                 msgError.Append(docRespuesta.Result.mensajesValidacion[i].ToString() + Environment.NewLine);
                         }
 
+                        if (docRespuesta.Result.reglasValidacionDIAN != null)
+                        {
+                            for (int i = 0; i < docRespuesta.Result.reglasValidacionDIAN.Count(); i++)
+                            {
+                                msgDian.Append("DIAN:" + docRespuesta.Result.reglasValidacionDIAN[i].ToString() + Environment.NewLine);
+                            }
+                        }
+
                         if (docRespuesta.Result.codigo == 114)  //documento emitdo previa mente
                         {
                             DocumentStatusResponse resp = serviceClienteEnvio.EstadoDocumento(tokenEmpresa, tokenAuthorizacion, factura.consecutivoDocumento.ToString());
                             if (resp.codigo == 200)
                             {
-
 
                                 TxLogFE.Text += "ReEnvio de Factura emitido previa mente:" + docRespuesta.Result.codigo + Environment.NewLine;
                                 TxLogFE.Text += "Codigo: " + resp.codigo.ToString() + Environment.NewLine;
@@ -1269,6 +1344,7 @@ namespace CuraduriaFacturas
                                     }
                                 }
 
+                                await SendPostsetLog(factura.consecutivoDocumento.ToString().Trim(), msgError.ToString(), msgDian.ToString());
                                 return;
                             }
                         }
@@ -1276,8 +1352,6 @@ namespace CuraduriaFacturas
                         //envio factura 
                         if (docRespuesta.Result.codigo == 200 || docRespuesta.Result.codigo == 201)
                         {
-
-
                             StringBuilder response = new StringBuilder();
                             response.Append("Codigo: " + docRespuesta.Result.codigo.ToString() + Environment.NewLine);
                             response.Append("Consecutivo Documento: " + docRespuesta.Result.consecutivoDocumento + Environment.NewLine);
@@ -1299,6 +1373,7 @@ namespace CuraduriaFacturas
                                 }
                             }
 
+                            await SendPostsetLog(factura.consecutivoDocumento.ToString().Trim(), msgError.ToString(), msgDian.ToString());
                         }
                         else
                         {
@@ -1310,7 +1385,6 @@ namespace CuraduriaFacturas
                             response.Append("Resultado :" + docRespuesta.Result.resultado + Environment.NewLine);
                             response.Append("Errores :" + msgError.ToString() + Environment.NewLine);
 
-
                             if (docRespuesta.Result.reglasValidacionDIAN != null)
                             {
                                 for (int i = 0; i < docRespuesta.Result.reglasValidacionDIAN.Count(); i++)
@@ -1320,11 +1394,12 @@ namespace CuraduriaFacturas
                             }
 
                             TxLogFE.Text += response.ToString();
+
+                            await SendPostsetLog(factura.consecutivoDocumento.ToString().Trim(), msgError.ToString(), msgDian.ToString());
                         }
 
-
-
                     }
+
 
 
 
@@ -1347,8 +1422,6 @@ namespace CuraduriaFacturas
                 GridMain.Opacity = 1;
             }
         }
-
-
 
         public async Task<bool> UpdateContabilidad(string cod_trn, string num_trn, string cufe)
         {
@@ -1570,6 +1643,10 @@ namespace CuraduriaFacturas
             {
                 MessageBox.Show("error al descargar formato de documento:" + w);
             }
+        }
+        private async void EnviaEstadoDoc()
+        {
+
         }
 
         #endregion

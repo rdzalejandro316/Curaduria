@@ -50,7 +50,7 @@
     <tipoIdentificacion>31</tipoIdentificacion>
     <tipoPersona>1</tipoPersona>
   </cliente>
-  <consecutivoDocumento>XX703</consecutivoDocumento>
+  <consecutivoDocumento>702</consecutivoDocumento>
   <detalleDeFactura>
     <FacturaDetalle>
       <cantidadPorEmpaque>1</cantidadPorEmpaque>
@@ -61,33 +61,33 @@
         <CargosDescuentos xsi:nil="true" />
       </cargosDescuentos>
       <codigoProducto>999</codigoProducto>
-      <descripcion>Prueba Cu3 2</descripcion>
-      <descripcionTecnica>Prueba Cu3 2</descripcionTecnica>
+      <descripcion>Prueba Cu3</descripcion>
+      <descripcionTecnica>Prueba Cu3</descripcionTecnica>
       <estandarCodigo>999</estandarCodigo>
       <estandarCodigoProducto>999</estandarCodigoProducto>
       <impuestosDetalles>
         <FacturaImpuestos>
-          <baseImponibleTOTALImp>1000000</baseImponibleTOTALImp>
+          <baseImponibleTOTALImp>156000</baseImponibleTOTALImp>
           <codigoTOTALImp>01</codigoTOTALImp>
           <controlInterno />
           <porcentajeTOTALImp>19</porcentajeTOTALImp>
           <unidadMedida>0</unidadMedida>
           <unidadMedidaTributo />
-          <valorTOTALImp>190000</valorTOTALImp>
+          <valorTOTALImp>29640</valorTOTALImp>
           <valorTributoUnidad />
         </FacturaImpuestos>
       </impuestosDetalles>
       <impuestosTotales>
         <ImpuestosTotales>
           <codigoTOTALImp>01</codigoTOTALImp>
-          <montoTotal>190000</montoTotal>
+          <montoTotal>29640</montoTotal>
         </ImpuestosTotales>
       </impuestosTotales>
       <marca>HKA</marca>
       <muestraGratis>0</muestraGratis>
-      <precioTotal>1000000</precioTotal>
-      <precioTotalSinImpuestos>1000000</precioTotalSinImpuestos>
-      <precioVentaUnitario>1000000</precioVentaUnitario>
+      <precioTotal>156000</precioTotal>
+      <precioTotalSinImpuestos>156000</precioTotalSinImpuestos>
+      <precioVentaUnitario>156000</precioVentaUnitario>
       <secuencia>1</secuencia>
       <unidadMedida>94</unidadMedida>
     </FacturaDetalle>
@@ -96,34 +96,34 @@
     <DocumentoReferenciado>
       <codigoEstatusDocumento>2</codigoEstatusDocumento>
       <codigoInterno>4</codigoInterno>
-      <cufeDocReferenciado>263e358e3d67424e0f19faf9210a3bfd5dc56c6be5213fa75e45cd3fffb30806a18ed534732c65bbc85f22a2325b6e3f</cufeDocReferenciado>
+      <cufeDocReferenciado>7898be4861ef42bc118c3a7ae5299de180717c721d854defaf7b5df466c727df0f085578281314f0331e8f02fe370cf3</cufeDocReferenciado>
       <descripcion>
         <string>Nota</string>
       </descripcion>
-      <numeroDocumento>50134</numeroDocumento>
+      <numeroDocumento>50133</numeroDocumento>
     </DocumentoReferenciado>
     <DocumentoReferenciado>
       <codigoInterno>5</codigoInterno>
-      <cufeDocReferenciado>263e358e3d67424e0f19faf9210a3bfd5dc56c6be5213fa75e45cd3fffb30806a18ed534732c65bbc85f22a2325b6e3f</cufeDocReferenciado>
+      <cufeDocReferenciado>7898be4861ef42bc118c3a7ae5299de180717c721d854defaf7b5df466c727df0f085578281314f0331e8f02fe370cf3</cufeDocReferenciado>
       <fecha>2021-10-14</fecha>
-      <numeroDocumento>50134</numeroDocumento>
+      <numeroDocumento>50133</numeroDocumento>
     </DocumentoReferenciado>
   </documentosReferenciados>
   <fechaEmision>2021-10-14 12:00:00</fechaEmision>
   <fechaVencimiento>2021-10-14</fechaVencimiento>
   <impuestosGenerales>
     <FacturaImpuestos>
-      <baseImponibleTOTALImp>1000000</baseImponibleTOTALImp>
+      <baseImponibleTOTALImp>156000</baseImponibleTOTALImp>
       <codigoTOTALImp>01</codigoTOTALImp>
       <porcentajeTOTALImp>19</porcentajeTOTALImp>
       <unidadMedida>0</unidadMedida>
-      <valorTOTALImp>190000</valorTOTALImp>
+      <valorTOTALImp>29640</valorTOTALImp>
     </FacturaImpuestos>
   </impuestosGenerales>
   <impuestosTotales>
     <ImpuestosTotales>
       <codigoTOTALImp>01</codigoTOTALImp>
-      <montoTotal>190000</montoTotal>
+      <montoTotal>29640</montoTotal>
     </ImpuestosTotales>
   </impuestosTotales>
   <mediosDePago>
@@ -135,13 +135,13 @@
     </MediosDePago>
   </mediosDePago>
   <moneda>COP</moneda>
-  <rangoNumeracion>XX-700</rangoNumeracion>
+  <rangoNumeracion>-50001</rangoNumeracion>
   <redondeoAplicado>0</redondeoAplicado>
   <tipoDocumento>91</tipoDocumento>
   <tipoOperacion>20</tipoOperacion>
-  <totalBaseImponible>1000000</totalBaseImponible>
-  <totalBrutoConImpuesto>1190000</totalBrutoConImpuesto>
-  <totalMonto>1190000</totalMonto>
+  <totalBaseImponible>156000</totalBaseImponible>
+  <totalBrutoConImpuesto>185640</totalBrutoConImpuesto>
+  <totalMonto>185640</totalMonto>
   <totalProductos>1</totalProductos>
-  <totalSinImpuestos>1000000</totalSinImpuestos>
+  <totalSinImpuestos>156000</totalSinImpuestos>
 </FacturaGeneral>
