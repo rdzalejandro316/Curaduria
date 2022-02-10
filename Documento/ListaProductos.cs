@@ -8,7 +8,7 @@ namespace CuraduriaFacturas.Documento
 {
     public class ListaProducto
     {
-        public object listaDeducciones { get; set; }
+        public List<ListaDeducciones> listaDeducciones { get; set; }
         public int numeroLinea { get; set; }
         public int cantidad { get; set; }
         public int valorTotal { get; set; }

@@ -906,7 +906,7 @@ namespace CuraduriaFacturas
                 else
                 {
                     //facturaDemo.consecutivoDocumento = "XX" + root.numeroDocumento;
-                    facturaDemo.consecutivoDocumento =  root.numeroDocumento;
+                    facturaDemo.consecutivoDocumento = root.numeroDocumento;
                 }
 
 
@@ -1038,25 +1038,6 @@ namespace CuraduriaFacturas
                         }
                     }
 
-                    if (root.listaProductos.listaDeducciones != null)//******** ver si toca cambiar
-                    {
-                        //if (Convert.ToDecimal(row["val_des"]) > 0)
-                        //{
-                        //    CargosDescuentos cargoDescto = new CargosDescuentos
-                        //    {
-                        //        codigo = "07",
-                        //        monto = Convert.ToDecimal(row["val_des"]).ToString(),
-
-                        //        montoBase = Convert.ToDecimal(row["subtotal"]).ToString(),
-                        //        porcentaje = Convert.ToDecimal(row["por_des"]).ToString(),
-                        //        indicador = "0",
-                        //        secuencia = "1",
-                        //        descripcion = "Descuento de temporada"
-                        //    };
-                        //    producto1.cargosDescuentos[0] = cargoDescto;
-                        //}
-                    }
-
                     if (root.listaProductos.listaImpuestos != null)
                     {
                         foreach (var lp in root.listaProductos.listaImpuestos)
@@ -1147,7 +1128,9 @@ namespace CuraduriaFacturas
                 #region impuestosGenerales
 
 
-                facturaDemo.impuestosGenerales = new FacturaImpuestos[1];
+                int tamaño = root.listaProductos.listaDeducciones != null ? (1 + root.listaProductos.listaDeducciones.Count) : 1;
+
+                facturaDemo.impuestosGenerales = new FacturaImpuestos[tamaño];
                 FacturaImpuestos impuestoGeneral1 = new FacturaImpuestos
                 {
                     baseImponibleTOTALImp = root.gruposImpuestos.listaImpuestos.baseGravable.ToString(),
@@ -1156,18 +1139,64 @@ namespace CuraduriaFacturas
                     unidadMedida = root.gruposImpuestos.listaImpuestos.codigoUnidad.ToString(),
                     valorTOTALImp = root.gruposImpuestos.listaImpuestos.valor.ToString()
                 };
-
                 facturaDemo.impuestosGenerales[0] = impuestoGeneral1;
+
+                if (root.listaProductos.listaDeducciones != null)
+                {
+                    if (root.listaProductos.listaDeducciones.Count > 0)
+                    {
+                        int impuesto = 0;
+                        foreach (ListaDeducciones imp in root.listaProductos.listaDeducciones)
+                        {
+                            
+                            string por = ((decimal)imp.porcentaje).ToString().Replace(",", ".");
+
+                            FacturaImpuestos retenciones = new FacturaImpuestos
+                            {
+                                baseImponibleTOTALImp = imp.baseGravable.ToString(),
+                                codigoTOTALImp = imp.codigo.ToString(),
+                                porcentajeTOTALImp = por,
+                                unidadMedida = "94",
+                                valorTOTALImp = imp.valor.ToString()
+                            };
+
+                            impuesto++;
+                            facturaDemo.impuestosGenerales[impuesto] = retenciones;
+                        }
+                    }
+                }
+
                 #endregion
 
                 #region impuestosTotales
-                facturaDemo.impuestosTotales = new ImpuestosTotales[1];
+
+                facturaDemo.impuestosTotales = new ImpuestosTotales[tamaño];
                 ImpuestosTotales impuestoGeneralTOTAL1 = new ImpuestosTotales
                 {
                     codigoTOTALImp = root.gruposImpuestos.codigo,
                     montoTotal = root.gruposImpuestos.total.ToString()
                 };
                 facturaDemo.impuestosTotales[0] = impuestoGeneralTOTAL1;
+
+
+                if (root.listaProductos.listaDeducciones != null)
+                {
+                    if (root.listaProductos.listaDeducciones.Count > 0)
+                    {
+                        int impuesto = 0;
+                        foreach (ListaDeducciones imp in root.listaProductos.listaDeducciones)
+                        {
+                            ImpuestosTotales retenciones = new ImpuestosTotales
+                            {
+                                codigoTOTALImp = imp.codigo.ToString(),
+                                montoTotal = imp.valor.ToString()
+                            };
+                            impuesto++;
+                            facturaDemo.impuestosTotales[impuesto] = retenciones;
+                        }
+                    }
+                }
+
                 #endregion
 
                 #region mediosDePago                                
