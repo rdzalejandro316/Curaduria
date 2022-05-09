@@ -9,7 +9,7 @@
         <email>
           <string>info@curaduria3.co</string>
         </email>
-        <fechaProgramada>2022-02-02 11:53:49</fechaProgramada>
+        <fechaProgramada>2022-04-28 01:32:18</fechaProgramada>
         <nitProveedorReceptor>1</nitProveedorReceptor>
         <telefono>5190660</telefono>
       </Destinatario>
@@ -50,7 +50,7 @@
     <tipoIdentificacion>31</tipoIdentificacion>
     <tipoPersona>1</tipoPersona>
   </cliente>
-  <consecutivoDocumento>50176</consecutivoDocumento>
+  <consecutivoDocumento>50193</consecutivoDocumento>
   <detalleDeFactura>
     <FacturaDetalle>
       <cantidadPorEmpaque>1</cantidadPorEmpaque>
@@ -61,59 +61,59 @@
         <CargosDescuentos xsi:nil="true" />
       </cargosDescuentos>
       <codigoProducto>999</codigoProducto>
-      <descripcion>Cargo unico CONCEPTOS DE REPARACIONES LOCATIVAS</descripcion>
-      <descripcionTecnica>Cargo unico CONCEPTOS DE REPARACIONES LOCATIVAS</descripcionTecnica>
+      <descripcion>Cargo unico CONCEPTOS DE USO DEL SUELO</descripcion>
+      <descripcionTecnica>Cargo unico CONCEPTOS DE USO DEL SUELO</descripcionTecnica>
       <estandarCodigo>999</estandarCodigo>
       <estandarCodigoProducto>999</estandarCodigoProducto>
       <impuestosDetalles>
         <FacturaImpuestos>
-          <baseImponibleTOTALImp>316953</baseImponibleTOTALImp>
+          <baseImponibleTOTALImp>63467</baseImponibleTOTALImp>
           <codigoTOTALImp>01</codigoTOTALImp>
           <controlInterno />
           <porcentajeTOTALImp>19</porcentajeTOTALImp>
           <unidadMedida>94</unidadMedida>
           <unidadMedidaTributo />
-          <valorTOTALImp>60221</valorTOTALImp>
+          <valorTOTALImp>12059</valorTOTALImp>
           <valorTributoUnidad />
         </FacturaImpuestos>
       </impuestosDetalles>
       <impuestosTotales>
         <ImpuestosTotales>
           <codigoTOTALImp>01</codigoTOTALImp>
-          <montoTotal>60221</montoTotal>
+          <montoTotal>12059</montoTotal>
         </ImpuestosTotales>
       </impuestosTotales>
       <marca>HKA</marca>
       <muestraGratis>0</muestraGratis>
-      <precioTotal>316953</precioTotal>
-      <precioTotalSinImpuestos>316953</precioTotalSinImpuestos>
-      <precioVentaUnitario>316953</precioVentaUnitario>
+      <precioTotal>63467</precioTotal>
+      <precioTotalSinImpuestos>63467</precioTotalSinImpuestos>
+      <precioVentaUnitario>63467</precioVentaUnitario>
       <secuencia>1</secuencia>
       <unidadMedida>94</unidadMedida>
     </FacturaDetalle>
   </detalleDeFactura>
-  <fechaEmision>2022-02-02 11:53:49</fechaEmision>
-  <fechaVencimiento>2022-02-02</fechaVencimiento>
+  <fechaEmision>2022-04-28 01:32:18</fechaEmision>
+  <fechaVencimiento>2022-04-28</fechaVencimiento>
   <impuestosGenerales>
     <FacturaImpuestos>
-      <baseImponibleTOTALImp>316953</baseImponibleTOTALImp>
+      <baseImponibleTOTALImp>63467</baseImponibleTOTALImp>
       <codigoTOTALImp>01</codigoTOTALImp>
       <porcentajeTOTALImp>19</porcentajeTOTALImp>
       <unidadMedida>94</unidadMedida>
-      <valorTOTALImp>60221</valorTOTALImp>
+      <valorTOTALImp>12059</valorTOTALImp>
     </FacturaImpuestos>
   </impuestosGenerales>
   <impuestosTotales>
     <ImpuestosTotales>
       <codigoTOTALImp>01</codigoTOTALImp>
-      <montoTotal>60221</montoTotal>
+      <montoTotal>12059</montoTotal>
     </ImpuestosTotales>
   </impuestosTotales>
   <mediosDePago>
     <MediosDePago>
-      <fechaDeVencimiento>2022-02-02</fechaDeVencimiento>
-      <medioPago>49</medioPago>
-      <metodoDePago>1</metodoDePago>
+      <fechaDeVencimiento>2022-04-28</fechaDeVencimiento>
+      <medioPago>10</medioPago>
+      <metodoDePago>2</metodoDePago>
       <numeroDeReferencia />
     </MediosDePago>
   </mediosDePago>
@@ -122,9 +122,9 @@
   <redondeoAplicado>0</redondeoAplicado>
   <tipoDocumento>01</tipoDocumento>
   <tipoOperacion>10</tipoOperacion>
-  <totalBaseImponible>316953</totalBaseImponible>
-  <totalBrutoConImpuesto>377174</totalBrutoConImpuesto>
-  <totalMonto>377174</totalMonto>
+  <totalBaseImponible>63467</totalBaseImponible>
+  <totalBrutoConImpuesto>75526</totalBrutoConImpuesto>
+  <totalMonto>75526</totalMonto>
   <totalProductos>1</totalProductos>
-  <totalSinImpuestos>316953</totalSinImpuestos>
+  <totalSinImpuestos>63467</totalSinImpuestos>
 </FacturaGeneral>

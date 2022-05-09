@@ -60,6 +60,9 @@ namespace CuraduriaFacturas
         string ConnectionFox = ConfigurationManager.AppSettings["ConnectionFox"].ToString();
         string ConnectionFoxSegurity = ConfigurationManager.AppSettings["ConnectionFoxSegurity"].ToString();
 
+        List<Facturas> facturas;
+        List<Notas> notas;
+
         #region inicio
 
         public MainWindow()
@@ -241,11 +244,14 @@ namespace CuraduriaFacturas
                 ColumnFENC.MappingName = "numFactura";
 
                 var valor = await GetDataFEandNc(URLGETFE, IsFEorNC);
+                facturas = valor;                
 
                 if (valor != null)
                 {
-                    dataGridAllFact.ItemsSource = valor;
+                    dataGridAllFact.ItemsSource = facturas;
                     TxTotFacturas.Text = valor.Count.ToString();
+
+                    await colorSend(facturas:facturas);
                 }
                 else
                 {
@@ -262,6 +268,7 @@ namespace CuraduriaFacturas
                 MessageBox.Show("error al consultar:" + w);
             }
         }
+
 
         private async void BtnConsultarNC_Click(object sender, RoutedEventArgs e)
         {
@@ -290,11 +297,15 @@ namespace CuraduriaFacturas
                 ColumnFENC.MappingName = "numNotaCredito";
 
                 var valor = await GetDataFEandNc(URLGETNC, IsFEorNC);
+                notas = valor;
 
                 if (valor != null)
                 {
-                    dataGridAllFact.ItemsSource = valor;
+                    dataGridAllFact.ItemsSource = notas;
                     TxTotFacturas.Text = valor.Count.ToString();
+
+                    await colorSend(notas: notas);
+
                 }
                 else
                 {
@@ -310,6 +321,44 @@ namespace CuraduriaFacturas
             catch (Exception w)
             {
                 MessageBox.Show("error al consultar:" + w);
+            }
+        }
+
+        public async Task colorSend(List<Facturas> facturas = null, List<Notas> notas = null)
+        {
+            try
+            {                
+                string cod_trn = IsFEorNC == IsTypeFEorNC.FE ? "04" : "08";
+
+                if (facturas != null)
+                {
+                    foreach (var factura in facturas)
+                    {
+                        var IsExists = await SelectFox($"select cod_trn,num_trn,fec_doc from cab_doc where cod_trn='{cod_trn}' and num_trn='{factura.numFactura}' and cufe<>'' ");
+                        if (IsExists > 0)
+                        {
+                            factura.enviado = "SI";
+                        }
+                    }
+
+                }
+
+                if (notas != null)
+                {
+                    foreach (var nota in notas)
+                    {
+                        var IsExists = await SelectFox($"select cod_trn,num_trn,fec_doc from cab_doc where cod_trn='{cod_trn}' and num_trn='{nota.numNotaCredito}' and cufe<>'' ");
+                        if (IsExists > 0)
+                        {
+                            nota.enviado = "SI";
+                        }
+                    }
+                }
+
+            }
+            catch (Exception w)
+            {
+                MessageBox.Show("error al colorear las facturas enviadas:" + w);
             }
         }
 
@@ -384,6 +433,7 @@ namespace CuraduriaFacturas
                     };
 
                     string json = Newtonsoft.Json.JsonConvert.SerializeObject(setLog);
+                    MessageBox.Show(json);
                     StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
                     response = await client.PostAsync(URLPOST, data);
 
@@ -1148,7 +1198,7 @@ namespace CuraduriaFacturas
                         int impuesto = 0;
                         foreach (ListaDeducciones imp in root.listaProductos.listaDeducciones)
                         {
-                            
+
                             string por = ((decimal)imp.porcentaje).ToString().Replace(",", ".");
 
                             FacturaImpuestos retenciones = new FacturaImpuestos

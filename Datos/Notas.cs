@@ -10,6 +10,7 @@ namespace CuraduriaFacturas.Datos
     {
         public string id { get; set; } 
         public string numNotaCredito { get; set; }
+        public string enviado { get; set; }
     }
 
 }

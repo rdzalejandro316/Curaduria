@@ -62,6 +62,14 @@
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
+        <Style  x:Key="gridStyle" TargetType="SiaSf:GridCell">
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=enviado}" Value="SI">
+                    <Setter Property="Background" Value="#4C008000"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
 
@@ -104,8 +112,9 @@
                         <RowDefinition/>
                         <RowDefinition Height="20"/>
                     </Grid.RowDefinitions>
-                    <SiaSf:SfDataGrid  x:Name="dataGridAllFact"  AutoGenerateColumns="False" ShowGroupDropArea="False" FontSize="10" AllowFiltering="True" HeaderStyle="{StaticResource headerStyle}" BorderBrush="{x:Null}">
+                    <SiaSf:SfDataGrid  x:Name="dataGridAllFact"  AutoGenerateColumns="False" ShowGroupDropArea="False" FontSize="10" AllowFiltering="True" HeaderStyle="{StaticResource headerStyle}"  CellStyle="{StaticResource gridStyle}" BorderBrush="{x:Null}">
                         <SiaSf:SfDataGrid.Columns>
+                            <SiaSf:GridTextColumn MappingName="enviado" IsHidden="False" Width="80"/>
                             <SiaSf:GridTextColumn HeaderText="ID" MappingName="id" Width="80"/>
                             <SiaSf:GridTextColumn x:Name="ColumnFENC" HeaderText="Factura" MappingName="numFactura" ColumnSizer="AutoWithLastColumnFill"/>
                             <SiaSf:GridTemplateColumn MappingName="Detalle" Width="60"  AllowFiltering="False" >
